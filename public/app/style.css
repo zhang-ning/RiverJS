@@ -1,0 +1,25 @@
+.prettyprint {
+    overflow: hidden;
+}
+xmp{
+    margin:0;
+}
+.form-group.text-center{
+    margin: 60px 0;
+}
+.form-group.text-center img {
+    margin: 0 30px;
+}
+.page-footer {
+    padding: 20px 0;
+    margin: 20px 0;
+    border-top: 1px solid #eee;
+}
+
+.row.text-center.download {
+    margin: 100px 0;
+}
+
+span.alert-danger {
+    background: transparent;
+}
