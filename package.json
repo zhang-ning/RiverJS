@@ -1,19 +1,36 @@
 {
   "name": "RiverJS",
-  "version": "0.0.0",
-  "description": "two-way binding,CMD module define",
+  "version": "0.0.1",
+  "description": "a simple font-end framework with extendable two-way binding",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "uglify-js": "~2.4.0",
+    "vows": "~0.7.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.15.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhang-ning/RiverJS"
   },
   "keywords": [
-      "two-way",
-      "binding"
+    "two-way",
+    "binding",
+    "part",
+    "of",
+    "cmd",
+    "standard",
+    "extendable"
   ],
-  "author": "hunter.dding@gmail.com",
-  "license": "BSD-2-Clause",
-  "devDependencies": {
-    "uglify-js": "2.4.0",
-    "vows": "0.7.0"
-  }
+  "author": "Jonathan Zhang",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "bf55916ce81ece931a40a0ce26a8bcc34821bf30"
 }
