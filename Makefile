@@ -1,7 +1,7 @@
 src = \
-			src/*.js \
-			src/core/*.js\
-			src/grammer/*.js
+			lib/*.js \
+			lib/core/*.js\
+			lib/grammer/*.js
 rp = $(realpath $(src))
 
 dist = dist/river.js
