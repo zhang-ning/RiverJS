@@ -1,4 +1,4 @@
-// Karma configuration
+//progress Karma configuration
 // Generated on Sun Dec 15 2013 10:43:53 GMT+0800 (CST)
 
 module.exports = function(config) {
@@ -27,8 +27,7 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress'],
-
+    reporters: ['dots'],
 
     // web server port
     port: 9876,
