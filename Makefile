@@ -28,4 +28,7 @@ clean:
 	@rm -f $(dist) $(minified) $(sourcemap)
 	@echo  clean success
 
-.PHONY: clean
+test:
+	@karma start
+
+.PHONY: clean test

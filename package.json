@@ -11,7 +11,18 @@
   },
   "devDependencies": {
     "uglify-js": "~2.4.0",
-    "mocha": "~1.15.1"
+    "mocha": "~1.15.1",
+    "karma-script-launcher": "~0.1.0",
+    "karma-chrome-launcher": "~0.1.1",
+    "karma-html2js-preprocessor": "~0.1.0",
+    "karma-firefox-launcher": "~0.1.2",
+    "karma-jasmine": "~0.1.4",
+    "karma-coffee-preprocessor": "~0.1.1",
+    "requirejs": "~2.1.9",
+    "karma-requirejs": "~0.2.0",
+    "karma-phantomjs-launcher": "~0.1.1",
+    "karma": "~0.10.8",
+    "karma-mocha": "~0.1.1"
   },
   "scripts": {
     "test": "mocha"
