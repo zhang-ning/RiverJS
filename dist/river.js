@@ -270,6 +270,11 @@ define('river.core.tools', function() {
       //F.prototype = source;
       return new F();
     },
+    compile:function(str){
+        var container = document.createElement('div');
+            container.innerHTML = str;
+        return container.childNodes[0];
+    },
     guid: function() {
       var uid = "$$";
       for (var i = 1; i <= 8; i++) {
@@ -328,11 +333,28 @@ define('river.grammer.jbind',function(){
 
   function jbind (str){
     var scope = this.scope;
-    this.node.value = scope[str];
-    this.node.onkeyup = function(){
-      scope[str] = this.value;
-      scope.apply();
+    var oldValue = this.node.value = scope[str];
+
+    var interval;
+
+    this.node.onfocus = function(){
+      var ele = this;
+      interval = setInterval(function(){
+        watch(ele.value);
+      },30);
     };
+
+    this.node.onblur = function(){
+      clearInterval(interval);
+    };
+
+    function watch(newValue){
+      if(newValue !== oldValue){
+        scope[str] = newValue;
+        oldValue = newValue;
+        scope.apply();
+      }
+    }
   }
 
   return jbind;
