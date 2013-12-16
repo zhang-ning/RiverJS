@@ -31,11 +31,10 @@ _$river.module = _$river.sandbox();
 var define = _$river.module.create;
 var main = _$river.module.run;
 
-main(function() {
+define('river.engine',function() {
 
   var me = this,
-    tool;
-
+    tool = me.need('river.core.tools');
   function loadGrammer(key) {
     return me.need('river.grammer.' + key);
   }
@@ -132,14 +131,18 @@ main(function() {
     }
   }
 
+  return {
+    scan:scan
+  };
+
+});
+
+main(function(){
+  var me = this;
   document.addEventListener('DOMContentLoaded', function() {
-
-    var model = me.need('river.core.model');
-    tool = me.need('river.core.tools');
+    var scan = me.need('river.engine').scan;
     scan(document);
-
   });
-
 });
 define('river.core.Date', function() {
 
@@ -249,6 +252,7 @@ define('river.core.model', function() {
   return Model;
 });
 define('river.core.tools', function() {
+  var toString = Object.prototype.toString;
   var tools = {
     inherit: function(target,source) {
       var F = function() {
