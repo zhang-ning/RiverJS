@@ -7,6 +7,7 @@ define('testBind',function(){
 main(function(){
   var $compile = this.need('river.core.tools').compile;
   var $scan = this.need('river.engine').scan;
+  var trigger = this.need('river.scenario').trigger;
 
   describe('template enginee jbind grammer',function(){
     it('should update mode when view changed',function(){
@@ -15,24 +16,22 @@ main(function(){
       expect('jbind works').toBe(element.textContent);
       var input = element.querySelector('input');
 
-      input.focus();
+      //input.focus();
+      trigger('focus',input);
       input.value = "change it";
       var flag = false;
-
       runs(function(){
         setTimeout(function(){
-          flag = true;
-        },300);
+            flag = true;
+        },100);
       });
-
-      waitsFor(function(){
+      waitsFor(function(){ 
         return flag;
-      },'exception',500);
-
+      },'somethings',100);
       runs(function(){
-        expect(element.textContent).toBe('change it');
-        input.blur();
+        expect('change it').toBe(element.textContent);
       });
+
     });
   });
 });
