@@ -24,7 +24,6 @@ main(function(){
         };
       });
 
-
       var dom = $compile('<div scope="spec.jchange"><select jchange="changeCtrl"><option value="f">first</option><option value="s">second</option></select><p>{{ msg }}</p></div>');
 
       var element = dom.querySelector("select");
