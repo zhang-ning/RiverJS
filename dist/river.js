@@ -419,6 +419,7 @@ define('river.grammer.jcompile',function(){
   };
 });
 define("river.grammer.repeat", function() {
+  var $tool = this.need('river.core.tools');
 
   /**
    * all the grammer 'this' object contains,this the base api
@@ -499,7 +500,11 @@ define("river.grammer.repeat", function() {
         element: doc,
         expression: doc.nodeValue
       });
-      doc.nodeValue = doc.nodeValue.replace(/{{.*}}/, scope[k]);
+      //this change is for identify two case: 
+      //  1. scope = {}
+      //  2. scope = "string" or number
+      var value  = $tool.isObject(scope) ? scope[k] : scope;
+      doc.nodeValue = doc.nodeValue.replace(/{{.*}}/, value);
     }
     if (doc.childNodes && doc.childNodes.length && !hasRepeat) {
       Array.prototype.forEach.call(doc.childNodes, function(child) {
