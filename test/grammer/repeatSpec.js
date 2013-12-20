@@ -72,6 +72,5 @@ main(function(){
       $scan(dom);
       expect(dom.textContent).not.toMatch(/undefined/);
     });
-
   });
 });
