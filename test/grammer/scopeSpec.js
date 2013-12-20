@@ -34,7 +34,7 @@ main(function(){
       define("spec.scope.sub",function(){
         return function(){
           subscope = this;
-          this.name = "junior peter ";
+          this.name = "junior peter";
           this.favorit = "apple";
           this.changeFavorit = foo.changeFavorit;
         };
@@ -45,13 +45,14 @@ main(function(){
           '<div scope="spec.scope.sub">' +
             '<p id="sa">{{ name    }}</p>' +
             '<p>{{ skill   }}</p>' +
-            '<p>{{ favorit }}</p>' +
+            '<p id="fv">{{ favorit }}</p>' +
             '<span class="btn" jclick="changeFavorit">Change favorit</span>' +
           '</div>' +
           '<button jclick="changeName">Change Name</button>' +
         '</div>');
 
       spyOn(foo,'changeName').andCallThrough();
+      spyOn(foo,'changeFavorit').andCallThrough();
       $scan(dom);
     });
 
@@ -66,6 +67,12 @@ main(function(){
       expect(foo.changeName.calls.length).toBe(10);
     });
 
+    it("trigger click n time,changeFavorit will be called n time ",function(){
+      for(var i=0;i<10;i++){
+        $trigger('click',dom.querySelector('.btn'));
+      }
+      expect(foo.changeFavorit.calls.length).toBe(10);
+    });
 
     it("the name should be mariy",function(){
       $trigger('click',dom.querySelector('button'));
@@ -83,11 +90,13 @@ main(function(){
     it("sub scope name should not be changed",function(){
       $trigger('click',dom.querySelector('button'));
       var son = dom.querySelector('#sa').textContent;
-      expect(son).toEqual("peter son");
+      expect(son).toEqual("junior peter");
     });
 
-    it("the favorit should be changed ",function(){
+    it("the favorit should be changed to banana",function(){
+      $trigger('click',dom.querySelector('.btn'));
+      var fav = dom.querySelector('#fv').textContent;
+      expect(fav).toEqual("banana");
     });
-
   });
 });
