@@ -1,0 +1,71 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'install', 'PhantomJS' ]
+2 info using npm@1.2.18
+3 info using node@v0.10.15
+4 verbose read json /home/zhang-ning/Github/RiverJS/package.json
+5 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/chai/package.json
+6 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/jsdom/package.json
+7 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/karma/package.json
+8 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/karma-chrome-launcher/package.json
+9 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/karma-coffee-preprocessor/package.json
+10 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/karma-firefox-launcher/package.json
+11 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/karma-html2js-preprocessor/package.json
+12 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/karma-jasmine/package.json
+13 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/karma-mocha/package.json
+14 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/karma-phantomjs-launcher/package.json
+15 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/karma-requirejs/package.json
+16 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/karma-script-launcher/package.json
+17 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/mocha/package.json
+18 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/requirejs/package.json
+19 verbose read json /home/zhang-ning/Github/RiverJS/node_modules/uglify-js/package.json
+20 verbose from cache /home/zhang-ning/Github/RiverJS/package.json
+21 verbose readDependencies using package.json deps
+22 verbose cache add [ 'PhantomJS', null ]
+23 verbose cache add name=undefined spec="PhantomJS" args=["PhantomJS",null]
+24 verbose parsed url { protocol: null,
+24 verbose parsed url   slashes: null,
+24 verbose parsed url   auth: null,
+24 verbose parsed url   host: null,
+24 verbose parsed url   port: null,
+24 verbose parsed url   hostname: null,
+24 verbose parsed url   hash: null,
+24 verbose parsed url   search: null,
+24 verbose parsed url   query: null,
+24 verbose parsed url   pathname: 'PhantomJS',
+24 verbose parsed url   path: 'PhantomJS',
+24 verbose parsed url   href: 'PhantomJS' }
+25 silly lockFile b8bed22c-PhantomJS PhantomJS
+26 verbose lock PhantomJS /home/zhang-ning/.npm/b8bed22c-PhantomJS.lock
+27 silly lockFile b8bed22c-PhantomJS PhantomJS
+28 silly lockFile b8bed22c-PhantomJS PhantomJS
+29 verbose addNamed [ 'PhantomJS', '' ]
+30 verbose addNamed [ null, '*' ]
+31 silly lockFile bc06a96e-PhantomJS PhantomJS@
+32 verbose lock PhantomJS@ /home/zhang-ning/.npm/bc06a96e-PhantomJS.lock
+33 silly addNameRange { name: 'PhantomJS', range: '*', hasData: false }
+34 verbose url raw PhantomJS
+35 verbose url resolving [ 'https://registry.npmjs.org/', './PhantomJS' ]
+36 verbose url resolved https://registry.npmjs.org/PhantomJS
+37 info trying registry request attempt 1 at 22:55:01
+38 http GET https://registry.npmjs.org/PhantomJS
+39 http 404 https://registry.npmjs.org/PhantomJS
+40 silly registry.get cb [ 404,
+40 silly registry.get   { server: 'CouchDB/1.5.0 (Erlang OTP/R15B03)',
+40 silly registry.get     date: 'Sat, 21 Dec 2013 14:55:07 GMT',
+40 silly registry.get     'content-type': 'application/json',
+40 silly registry.get     'content-length': '52',
+40 silly registry.get     'cache-control': 'must-revalidate' } ]
+41 silly lockFile bc06a96e-PhantomJS PhantomJS@
+42 silly lockFile bc06a96e-PhantomJS PhantomJS@
+43 error 404 'PhantomJS' is not in the npm registry.
+43 error 404 You should bug the author to publish it
+43 error 404
+43 error 404 Note that you can also install from a
+43 error 404 tarball, folder, or http url, or git url.
+44 error System Linux 3.11.0-14-generic
+45 error command "/usr/bin/nodejs" "/usr/bin/npm" "install" "PhantomJS"
+46 error cwd /home/zhang-ning/Github/RiverJS
+47 error node -v v0.10.15
+48 error npm -v 1.2.18
+49 error code E404
+50 verbose exit [ 1, true ]
