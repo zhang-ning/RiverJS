@@ -8,7 +8,7 @@ RiverJS is a simple framework fello part of CMD standard and contains a extendab
 [RiverJS](http://besideriver.com/RiverJS)
 
 
-###
+###How to set up dev environment ?
 1 you need to install nodejs 
 2 install karma 
 
