@@ -7,8 +7,8 @@ rp = $(realpath $(src))
 dist = dist/river.js
 minified = $(dist:.js=.min.js)
 sourcemap = $(dist:.js=.map)
-minify = uglifyjs
-#minify = node_modules/uglify-js/bin/uglifyjs
+#minify = uglifyjs
+minify = node_modules/uglify-js/bin/uglifyjs
 #appfolder = ../riverjs-website
 
 all:$(dist) $(minified)

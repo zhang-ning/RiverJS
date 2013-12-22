@@ -47,11 +47,8 @@ define('river.engine',function() {
   function checkAttributes(doc, fatherContext) {
     var state = {
       hasRepeat: false,
-      context: undefined
+      context: fatherContext
     };
-    if (fatherContext) {
-      state.context = fatherContext;
-    }
     var newContext = {
       scope: {},
       node: doc,
@@ -69,12 +66,14 @@ define('river.engine',function() {
           state.hasRepeat = true;
         }
         if ('scope' === key) {
+          //here we cover the current context by newContext;
           state.context = newContext;
-          if (fatherContext) {
-            state.context.scope = tool.inherit(state.context.scope, fatherContext.scope);
-            state.context.eom = tool.inherit(state.context.eom, fatherContext.eom);
-          }
           grammer.call(state.context, value);
+          if (fatherContext) {
+            //the inherit object should be the same reference,nor a new one.And no need to inherit eom.
+            tool.inherit(state.context.scope, fatherContext.scope);
+
+          }
         } else {
           if (tool.isFunction(grammer)) {
             if (state.context) {
@@ -253,10 +252,10 @@ define('river.core.model', function() {
   Model.prototype.apply = function() {
     var _eom = _eoms[this.$$ns],
       last = lasts[this.$$ns];
-    each(this, function(item, index) {
-      if (_eom[index] && last[index] !== item) {
-        update(item, index, _eom);
-        last[index] = item;
+    each(this, function(val, index) {
+      if (_eom[index] && last[index] !== val) {
+        update(val, index, _eom);
+        last[index] = val;
       }
     });
   };
@@ -289,7 +288,11 @@ define('river.core.tools', function() {
         F.prototype[y] = source[y];
       }
       //F.prototype = source;
-      return new F();
+      var f = new F();
+      for(var z in f){
+        target[z] = f[z];
+      }
+      return target;
     },
     compile:function(str){
         var container = document.createElement('div');

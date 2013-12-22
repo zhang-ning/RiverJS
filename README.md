@@ -24,7 +24,17 @@ cd RiverJS
 npm install
 ```
 
-4 download PhantomJS and put the bin file into '/usr/bin/'
+4 download [PhantomJS](http://phantomjs.org) and put the bin file into 
+
+```
+mv /your/path/phantomjs /usr/bin/
+```
+
+or you can change the `karma.conf.js` 
+
+```
+browsers: ['Chrome']
+```
 
 
 
