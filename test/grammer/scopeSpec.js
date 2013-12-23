@@ -20,6 +20,13 @@ main(function(){
           }else{
             subscope.favorit = "apple";
           }
+        },
+        subchangeName : function(){
+          if(subscope.name === "junior peter"){
+            subscope.name = "little mariy";
+          }else{
+            subscope.name = "junior peter";
+          }
         }
       };
       define("spec.scope",function(){
@@ -37,6 +44,7 @@ main(function(){
           this.name = "junior peter";
           this.favorit = "apple";
           this.changeFavorit = foo.changeFavorit;
+          this.changeName = foo.subchangeName;
         };
       });
 
@@ -47,6 +55,7 @@ main(function(){
             '<p>{{ skill   }}</p>' +
             '<p id="fv">{{ favorit }}</p>' +
             '<span class="btn" jclick="changeFavorit">Change favorit</span>' +
+            '<span class="changename" jclick="changeName">Change Name</span>' +
           '</div>' +
           '<button jclick="changeName">Change Name</button>' +
         '</div>');
@@ -97,6 +106,14 @@ main(function(){
       $trigger('click',dom.querySelector('.btn'));
       var fav = dom.querySelector('#fv').textContent;
       expect(fav).toEqual("banana");
+    });
+
+    it("sub scope call change name",function(){
+      $trigger('click',dom.querySelector('.changename'));
+      var fa = dom.querySelector('#fa').textContent;
+      var sa = dom.querySelector('#sa').textContent;
+      expect(fa).toEqual("peter");
+      expect(sa).toEqual("little mariy");
     });
   });
 });
