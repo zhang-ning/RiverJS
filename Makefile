@@ -13,7 +13,6 @@ minify = node_modules/uglify-js/bin/uglifyjs
 jsdoc = node_modules/.bin/jsdoc
 doc = doc
 doctemplate = node_modules/jsdoc/templates/haruki
-web = ./
 
 all:$(dist) $(minified)
 
@@ -26,7 +25,6 @@ $(minified):$(src)
 		--source-map-url river.map \
 		--source-map $(sourcemap) -c -m
 	@echo minify $@ success
-	@cp $@ $(web)
 #	@cp  $@ $(sourcemap) src -rf $(appfolder) 
 
 clean:
