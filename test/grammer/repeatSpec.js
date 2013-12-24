@@ -72,5 +72,44 @@ main(function(){
       $scan(dom);
       expect(dom.textContent).not.toMatch(/undefined/);
     });
+
+    it("should work when there more then 3 layer nest structor.",function(){
+      define('spec.repeat',function(){
+        return function(){
+          var m = {
+            frameworks:[{ name : "jquery", 
+              users : [{
+                comp : "compA",
+                emp : [{name : "a"},{name : "b"}] 
+              }]
+            },
+            { name : "angularj", 
+              users : [{
+                comp : "compB",
+                emp : [{name : "c"},{name : "d"}] 
+              }]
+            }
+          ]}; 
+        this.inject(m);
+        };
+      });
+
+      var dom = $compile(
+        '<div scope="spec.repeat">' +
+          '<ul>' +
+            '<li repeat="lib in m.frameworks">' +
+              '<span>{{ lib.name }}</span>' +
+              '<ul>' + 
+                '<li repeat="user in fre.users">' + 
+                  '<span>{{ user.comp }}</span>' +
+                  '<ol><li repeat="ep in user.emp">{{ep.name}}</li></ol>' +
+                '</li>' +
+              '</ul>' +
+            '</li>' +
+          '</ul>' +
+        '</div>');
+      $scan(dom);
+      expect(dom.textContent).not.toMatch(/undefined/);
+    })
   });
 });

@@ -28,6 +28,13 @@ var _$river = {
 _$river.module = _$river.sandbox();
 
 /*jshint unused:false */
+
+
+/**
+ *@name define
+ *@param {string} key - module name and NameSpace
+ *@param {function} fn - the module implementation
+ */
 var define = _$river.module.create;
 var main = _$river.module.run;
 
@@ -273,6 +280,9 @@ define('river.core.model', function() {
 });
 define('river.core.tools', function() {
   var toString = Object.prototype.toString;
+  /**
+   * @namespace river.core.tools
+   */
   var tools = {
     inherit: function(target,source) {
       var F = function() {
