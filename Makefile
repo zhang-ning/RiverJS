@@ -11,6 +11,7 @@ sourcemap = $(dist:.js=.map)
 minify = node_modules/uglify-js/bin/uglifyjs
 #appfolder = ../riverjs-website
 jsdoc = node_modules/.bin/jsdoc
+karma = node_modules/.bin/karma
 doc = doc
 doctemplate = node_modules/jsdoc/templates/haruki
 
@@ -32,7 +33,7 @@ clean:
 	@echo  clean success
 
 test:
-	@karma start
+	$(karma) start
 
 doc:
 	@rm $(doc)/ -rf
