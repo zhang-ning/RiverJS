@@ -1,0 +1,49 @@
+{
+  "name": "riverjs",
+  "version": "1.0.2",
+  "description": "a simple font-end framework with extendable two-way binding",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "jsdom": "~0.5.7"
+  },
+  "devDependencies": {
+    "uglify-js": "~2.4.0",
+    "mocha": "~1.15.1",
+    "karma-script-launcher": "~0.1.0",
+    "karma-chrome-launcher": "~0.1.1",
+    "karma-html2js-preprocessor": "~0.1.0",
+    "karma-firefox-launcher": "~0.1.2",
+    "karma-jasmine": "~0.1.4",
+    "karma-coffee-preprocessor": "~0.1.1",
+    "requirejs": "~2.1.9",
+    "karma-requirejs": "~0.2.0",
+    "karma-phantomjs-launcher": "~0.1.1",
+    "karma": "~0.10.8",
+    "karma-mocha": "~0.1.1",
+    "chai": "~1.8.1",
+    "jsdoc": "~3.3.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhang-ning/RiverJS"
+  },
+  "keywords": [
+    "two-way",
+    "binding",
+    "part",
+    "of",
+    "cmd",
+    "standard",
+    "extendable"
+  ],
+  "author": "Jonathan Zhang",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "bf55916ce81ece931a40a0ce26a8bcc34821bf30"
+}
