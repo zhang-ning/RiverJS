@@ -1,0 +1,27 @@
+{
+  "name": "riverjs",
+  "main": "dist/river.min.js",
+  "version": "1.0.3",
+  "homepage": "https://github.com/zhang-ning/RiverJS",
+  "authors": [
+    "zhang-ning <hunter.dding@gmail.com>"
+  ],
+  "description": "a simple font-end framework with extendable two-way binding",
+  "keywords": [
+    "two-way",
+    "binding",
+    "part",
+    "of",
+    "cmd",
+    "standard",
+    "extendable"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
