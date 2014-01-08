@@ -24,7 +24,8 @@
     "karma": "~0.10.8",
     "karma-mocha": "~0.1.1",
     "chai": "~1.8.1",
-    "jsdoc": "~3.3.0"
+    "jsdoc": "~3.3.0",
+    "grunt": "~0.4.2"
   },
   "scripts": {
     "test": "mocha"
