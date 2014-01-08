@@ -38,6 +38,13 @@ module.exports = function(grunt) {
     watch: {
       files: ['<%= jshint.files %>'],
       tasks: ['jshint', 'qunit']
+    },
+    notify:{
+      build:{
+        options:{
+          message: 'build finished'
+        }
+      }
     }
   });
 
@@ -46,8 +53,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-notify');
 
   grunt.registerTask('test', ['jshint', 'qunit']);
 
-  grunt.registerTask('default', ['jshint', 'concat' ]);
+  grunt.registerTask('default', ['jshint', 'concat','notify']);
 };
