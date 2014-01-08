@@ -1,5 +1,5 @@
 {
-  "name": "riverjs",
+  "name": "river",
   "version": "1.0.2",
   "description": "a simple font-end framework with extendable two-way binding",
   "main": "index.js",
