@@ -1,5 +1,5 @@
 #RiverJS
-
+[![Build Status](https://travis-ci.org/zhang-ning/RiverJS.png?branch=master)](https://travis-ci.org/zhang-ning/RiverJS)
 
 ###Description
 RiverJS is a simple framework fello part of CMD standard and contains a extendable two-way binding template-enginee.
