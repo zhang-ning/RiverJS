@@ -38,199 +38,7 @@ _$river.module = _$river.sandbox();
 var define = _$river.module.create;
 var main = _$river.module.run;
 
-;define('river.core.Date', function() {
-
-  var getDateByCity = function(jetleg) {
-    var now = new Date();
-    var local = new Date(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate(),
-      now.getUTCHours() + parseInt(jetleg),
-      now.getUTCMinutes(),
-      now.getUTCSeconds());
-
-    return {
-      date: local,
-      toString: function(f){
-        local.toString = toString;
-        return local.toString(f);
-      }
-    };
-  };
-
-  function toString(format) {
-    var o = {
-      "M+": this.getMonth() + 1, //month
-      "d+": this.getDate(), //day
-      "h+": this.getHours(), //hour
-      "m+": this.getMinutes(), //minute
-      "s+": this.getSeconds(), //second
-      "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
-      "S": this.getMilliseconds() //millisecond
-    };
-
-    if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o) if (new RegExp("(" + k + ")").test(format))
-        format = format.replace(RegExp.$1,
-          RegExp.$1.length == 1 ? o[k] :
-          ("00" + o[k]).substr(("" + o[k]).length));
-    return format;
-  }
-
-
-  return {
-    getDateByCity: getDateByCity
-  };
-});
-;define('river.core.model', function() {
-
-  var tools = this.need('river.core.tools');
-
-  var _eoms = {}, lasts = {};
-
-  var isArray = tools.isArray;
-  var isObject = tools.isObject;
-  var isString = tools.isString;
-  var isNumber = tools.isNumber;
-  var each = tools.each;
-  var loop = tools.loop;
-
-  function update(value, key, eom) {
-    if (isString(value) || isNumber(value)) {
-      loop(eom[key], function(ele, i) {
-        ele.element.nodeValue = ele.expression.replace(/{{.*}}/, value);
-        //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
-      });
-    } else if (isArray(value)) {
-      loop(value, function(item, index) {
-        update(item, index, eom[key][index]);
-      });
-    } else if (isObject(value)) {
-      each(value, function(item, index) {
-        update(item, index, eom);
-      });
-    }
-  }
-
-  function Model(ns, eom, ref) {
-    _eoms[ns] = eom;
-    lasts[ns] = {};
-    this.$$ns = ns;
-    for (var x in ref) {
-      this[x] = ref[x];
-      last[x] = ref[x];
-    }
-  }
-
-  Model.prototype.apply = function() {
-    var _eom = _eoms[this.$$ns],
-      last = lasts[this.$$ns];
-    each(this, function(val, index) {
-      if (_eom[index] && last[index] !== val) {
-        update(val, index, _eom);
-        last[index] = val;
-      }
-    });
-  };
-
-  Model.prototype.watch = function(eom, repeat) {};
-
-  Model.prototype.inject = function(source) {
-    var me = this;
-    each(source, function(item, index) {
-      me[index] = source[index];
-    });
-  };
-
-  return Model;
-});
-;define('river.core.tools', function() {
-  var toString = Object.prototype.toString;
-  /**
-   * @namespace river.core.tools
-   */
-  var tools = {
-    inherit: function(target,source) {
-      var F = function() {
-        for (var x in target) {
-          if(target.hasOwnProperty && target.hasOwnProperty(x)){
-            this[x] = target[x];
-          }else{
-            F.prototype[x] = target[x];
-          }
-        }
-      };
-      for(var y in source){
-        F.prototype[y] = source[y];
-      }
-      //F.prototype = source;
-      var f = new F();
-      for(var z in f){
-        target[z] = f[z];
-      }
-      return target;
-    },
-    compile:function(str){
-        var container = document.createElement('div');
-            container.innerHTML = str;
-        return container.childNodes[0];
-    },
-    guid: function() {
-      var uid = "$$";
-      for (var i = 1; i <= 8; i++) {
-        var n = Math.floor(Math.random() * 16).toString(16);
-        uid += n;
-        if ((i == 3) || (i == 5))
-          uid += "-";
-      }
-      return uid;
-    },
-    /**
-     * it's for array loop
-     */
-    loop: function(array, fn) {
-      var context = {};
-      for (var i = 0; i < array.length; i++) {
-        fn.call(context, array[i], i);
-      }
-    },
-    /**
-     * it's for object loop,but will not loop in prototype
-     */
-    each: function(obj, fn) {
-      var context = {};
-      for (var x in obj) {
-        if (obj.hasOwnProperty && obj.hasOwnProperty(x)) {
-          fn.call(context, obj[x], x);
-        }
-      }
-    },
-    log: function() {
-      if (console) {
-        Function.apply.call(console.log, console, arguments);
-      }
-    },
-    isArray: function(array) {
-      return toString.apply(array) === '[object Array]';
-    },
-    isObject: function(obj) {
-      return obj !== null && typeof obj === 'object';
-    },
-    isFunction: function(obj) {
-      return typeof obj === 'function';
-    },
-    isString: function(str) {
-      return typeof str === 'string';
-    },
-    isNumber: function(no) {
-      return typeof no === 'number';
-    }
-  };
-
-  return tools;
-});
-;define('river.engine',function() {
+define('river.engine',function() {
 
   var me = this,
     tool = me.need('river.core.tools');
@@ -342,7 +150,257 @@ main(function(){
     scan(document);
   });
 });
-;define('river.grammer.jbind',function(){
+define('river.scenario',function(){
+
+  var tools = this.need('river.core.tools');
+
+  /**
+   * this function is for trigger browser default behavior,
+   * and it will be usefule , when you do the unite test , or e2e test
+   * in the future
+   */
+  function _trigger (type,element){
+
+    //to-do , cross IE < 9
+    var event = document.createEvent('MouseEvents');
+    event.initEvent(type,true,true);
+    element.dispatchEvent(event);
+  }
+
+  return {
+    trigger:_trigger
+  };
+});
+define('river.core.Date', function() {
+
+  var getDateByCity = function(jetleg) {
+    var now = new Date();
+    var local = new Date(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      now.getUTCHours() + parseInt(jetleg),
+      now.getUTCMinutes(),
+      now.getUTCSeconds());
+
+    return {
+      date: local,
+      toString: function(f){
+        local.toString = toString;
+        return local.toString(f);
+      }
+    };
+  };
+
+  function toString(format) {
+    var o = {
+      "M+": this.getMonth() + 1, //month
+      "d+": this.getDate(), //day
+      "h+": this.getHours(), //hour
+      "m+": this.getMinutes(), //minute
+      "s+": this.getSeconds(), //second
+      "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+      "S": this.getMilliseconds() //millisecond
+    };
+
+    if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o) if (new RegExp("(" + k + ")").test(format))
+        format = format.replace(RegExp.$1,
+          RegExp.$1.length == 1 ? o[k] :
+          ("00" + o[k]).substr(("" + o[k]).length));
+    return format;
+  }
+
+
+  return {
+    getDateByCity: getDateByCity
+  };
+});
+define('river.core.model', function() {
+
+  var tools = this.need('river.core.tools');
+
+  var _eoms = {}, lasts = {};
+
+  var isArray = tools.isArray;
+  var isObject = tools.isObject;
+  var isString = tools.isString;
+  var isNumber = tools.isNumber;
+  var each = tools.each;
+  var loop = tools.loop;
+
+  function update(value, key, eom) {
+    if (isString(value) || isNumber(value)) {
+      loop(eom[key], function(ele, i) {
+        ele.element.nodeValue = ele.expression.replace(/{{.*}}/, value);
+        //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
+      });
+    } else if (isArray(value)) {
+      loop(value, function(item, index) {
+        update(item, index, eom[key][index]);
+      });
+    } else if (isObject(value)) {
+      each(value, function(item, index) {
+        update(item, index, eom);
+      });
+    }
+  }
+
+  function Model(ns, eom, ref) {
+    _eoms[ns] = eom;
+    lasts[ns] = {};
+    this.$$ns = ns;
+    for (var x in ref) {
+      this[x] = ref[x];
+      lasts[ns] = ref[x];
+    }
+    //lasts[ns] = tools.clone(ref);
+  }
+
+  Model.prototype.apply = function() {
+    var _eom = _eoms[this.$$ns],
+      last = lasts[this.$$ns];
+    each(this, function(val, index) {
+      if (_eom[index] && last[index] !== val) {
+        update(val, index, _eom);
+        last[index] = val;
+      }
+    });
+  };
+
+  Model.prototype.watch = function(eom, repeat) {};
+
+  Model.prototype.inject = function(source) {
+    var me = this;
+    each(source, function(item, index) {
+      me[index] = source[index];
+    });
+  };
+
+
+  return Model;
+});
+define('river.core.tools', function() {
+  var toString = Object.prototype.toString;
+  /**
+   * @namespace river.core.tools
+   */
+
+  function inherit(target,source) {
+    var F = function() {
+      for (var x in target) {
+        if(target.hasOwnProperty && target.hasOwnProperty(x)){
+          this[x] = target[x];
+        }else{
+          F.prototype[x] = target[x];
+        }
+      }
+    };
+    for(var y in source){
+      F.prototype[y] = source[y];
+    }
+    //F.prototype = source;
+    var f = new F();
+    for(var z in f){
+      target[z] = f[z];
+    }
+    return target;
+  }
+
+  function compile(str){
+    var container = document.createElement('div');
+    container.innerHTML = str;
+    return container.childNodes[0];
+  }
+
+  function guid() {
+    var uid = "$$";
+    for (var i = 1; i <= 8; i++) {
+      var n = Math.floor(Math.random() * 16).toString(16);
+      uid += n;
+      if ((i == 3) || (i == 5))
+        uid += "-";
+    }
+    return uid;
+  }
+
+    /**
+     * it's for array loop
+     */
+  function loop(array, fn) {
+    var context = {};
+    for (var i = 0; i < array.length; i++) {
+      fn.call(context, array[i], i);
+    }
+  }
+
+  /**
+   * it's for object loop,but will not loop in prototype
+   */
+  function each(obj, fn) {
+    var context = {};
+    for (var x in obj) {
+      if (obj.hasOwnProperty && obj.hasOwnProperty(x)) {
+        fn.call(context, obj[x], x);
+      }
+    }
+  }
+
+  function type(name,item) {
+    return window.Object.prototype.toString.call(item) === '[object '+ name +']';
+  }
+
+
+  /**
+   * clone in deep
+   * @api:public
+   * @param:{object} target
+   * @param {object} source 
+   */
+  function clone(target,source){
+    for(var x in source){
+      var isObject = type('Object',source[x])
+        , isArray  = type('Array', source[x])
+        , hasChild = isObject || isArray;
+
+      if(hasChild){
+        target[x] = isObject ? {} : [];
+        clone(target[x],source[x]);
+      }else{
+        target[x] = source[x];
+      }
+    }
+    return target;
+  }
+
+
+  /**
+   * diff two object/array
+   * @api:public
+   * @param:{object} target
+   * @param {object} source
+   */
+  function diff(target,source){
+  }
+
+  var exports = {
+    inherit    : inherit,
+    compile    : compile,
+    guid       : guid,
+    loop       : loop,
+    each       : each,
+    clone      : clone,
+    diff       : diff,
+    isArray    : function(array) {return type('Array',array);},
+    isObject   : function(obj) { return type('Object',obj);},
+    isFunction : function(obj) { return type('Function',obj); },
+    isString   : function(str) { return type('String',str); },
+    isNumber   : function(no) { return type('Number',no); }
+  };
+
+  return exports;
+});
+define('river.grammer.jbind',function(){
 
   function jbind (str){
     var scope = this.scope;
@@ -373,7 +431,7 @@ main(function(){
   return jbind;
 
 });
-;define('river.grammer.jChange', function() {
+define('river.grammer.jChange', function() {
   function change (str) {
     var fn = this.scope[str];
     var scope = this.scope;
@@ -385,7 +443,7 @@ main(function(){
   }
   return change;
 });
-;define('river.grammer.jclick', function() {
+define('river.grammer.jclick', function() {
   function click (str) {
     var key = str.replace(/\(.*\)/,'');
     var fn = this.scope[key];
@@ -406,7 +464,7 @@ main(function(){
   }
   return click;
 });
-;define('river.grammer.jcompile',function(){
+define('river.grammer.jcompile',function(){
   return function(){
     //jcompile should never be used when sub tag structutor contain any other grammer tag,cause it will be totally replace by innnerHTML.
 
@@ -419,7 +477,7 @@ main(function(){
 //    console.log(this.eom.msg);
   };
 });
-;define("river.grammer.repeat", function() {
+define("river.grammer.repeat", function() {
   var $tool = this.need('river.core.tools');
 
   /**
@@ -516,7 +574,7 @@ main(function(){
 
   return repeat;
 });
-;define('river.grammer.scope', function() {
+define('river.grammer.scope', function() {
 
   var me = this;
   var model = me.need('river.core.model');
@@ -539,25 +597,4 @@ main(function(){
   }
 
   return _scope;
-});
-;define('river.scenario',function(){
-
-  var tools = this.need('river.core.tools');
-
-  /**
-   * this function is for trigger browser default behavior,
-   * and it will be usefule , when you do the unite test , or e2e test
-   * in the future
-   */
-  function _trigger (type,element){
-
-    //to-do , cross IE < 9
-    var event = document.createEvent('MouseEvents');
-    event.initEvent(type,true,true);
-    element.dispatchEvent(event);
-  }
-
-  return {
-    trigger:_trigger
-  };
 });
