@@ -222,12 +222,12 @@ define('river.core.model', function() {
 
   var _eoms = {}, lasts = {};
 
-  var isArray = tools.isArray;
+  var isArray  = tools.isArray;
   var isObject = tools.isObject;
   var isString = tools.isString;
   var isNumber = tools.isNumber;
-  var each = tools.each;
-  var loop = tools.loop;
+  var each     = tools.each;
+  var loop     = tools.loop;
 
   function update(value, key, eom) {
     if (isString(value) || isNumber(value)) {
@@ -252,16 +252,16 @@ define('river.core.model', function() {
     this.$$ns = ns;
     for (var x in ref) {
       this[x] = ref[x];
-      lasts[ns] = ref[x];
+      lasts[ns] = tools.clone(ref);
     }
-    //lasts[ns] = tools.clone(ref);
   }
 
   Model.prototype.apply = function() {
-    var _eom = _eoms[this.$$ns],
-      last = lasts[this.$$ns];
+    var _eom = _eoms[this.$$ns]
+      , last = lasts[this.$$ns];
+
     each(this, function(val, index) {
-      if (_eom[index] && last[index] !== val) {
+      if (_eom[index] && !tools.diff(last[index],val)) {
         update(val, index, _eom);
         last[index] = val;
       }
@@ -381,6 +381,21 @@ define('river.core.tools', function() {
    * @param {object} source
    */
   function diff(target,source){
+    if(typeof source === 'object'){
+      for(var x in source){
+        var isObject = typeof source[x] === 'object';
+        if(isObject){
+          diff(target,source);
+        }else{
+          if(target[x] != source[x]){
+            return false;
+          }
+        }
+      }
+      return true;
+    }else{
+      return target == source;
+    }
   }
 
   var exports = {
