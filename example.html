@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="two-way binding,cmd,CMD,river,riverjs,jonathan,angularjs">
+    <meta name="author" content="Jonathan,jonathan,zhang-ning">
+    <meta name="keywords" content="two-way binding,cmd,CMD,river,riverjs,joanthan,angularjs">
+    <title>Riverjs By Jonathan</title>
+    <link rel="stylesheet" href="public/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="public/lib/fontello/css/github.css">
+    <link rel="stylesheet" href="public/lib/prettify/prettify.css">
+    <link rel="stylesheet" href="public/app/style.css">
+    <script src="public/lib/prettify/prettify.js"></script>
+    <script src="river.min.js"></script>
+    <script src="public/app/controller/controller.js"></script>
+    <script src="public/app/controller/my.class.music.js"></script>
+    <script src="public/app/controller/your.class.music.js"></script>
+    <script src="public/app/controller/your.firstpage.controller.js"></script>
+    <script src="public/app/controller/sample.inherit.js"></script>
+    <script src="public/app/plugin/ele-example.js"></script>
+    <script src="public/app/plugin/my-time.js"></script>
+  </head>
+  
+  <body onload="prettyPrint()">
+    <div class="container">
+      <div class="page-header">
+         <h1>RiverJS </h1>
+
+         <h2><small>A <strong>CMD-like</strong> system with  extendable <strong>Two-way</strong> binding template.</small></h2>
+
+      </div>
+      <div class="page-body">
+        <p><b>RiverJS</b> is a very smart framework with unbelievable 5.3kb size,but it contains
+          a very powerful extendable two-way binding template system,and a very nice module
+          define system to make you feel that code organization is absolutely an artwork.As
+          Riverjs doesn't hope to hogtie you by many concepts and APIs,and also as I'm a
+          big fans of <a target="_blank" href="http://en.wikipedia.org/wiki/KISS_principle">Keep it simple, stupid</a> principle.RiverJS
+          doesn't contain any basic service like ajax,animation yet in this version.But you
+          can learn how to use RiverJS to build them in 5 minutes,by reading the tutorial
+          below with active examples.</p>
+        <div class="row text-center download">
+          <a href="https://github.com/zhang-ning/RiverJS" class="btn btn-info btn-lg" ><i class="icon-github-circled"></i> View on Github <small></small></a>
+          <a href="river.min.js" download="river.min.js" class="btn btn-primary btn-lg"> <i class="glyphicon glyphicon-cloud-download"></i> Download <small>(0.1.1)</small></a>
+        </div>
+        <p>Or, to link directly to the latest release, copy this snippet:</p> <pre class="prettyprint lang-html"><xmp><script src="http://besideriver.com/RiverJS/river.min.js" charset="utf-8"></script></xmp></pre>
+
+        <hr>
+         <h3><small>The </small>CMD <small>module define in RiverJS</small></h3>
+ <pre class="prettyprint lang-javascript linenums">
+//define(name,fn);
+define('your.namespace.mymodule',function(){
+
+  //your private variable
+  var myname = 'Jonathan';
+  ...
+  //your private method
+  function getMyname(){
+    return myname;
+  }
+  //...
+
+  //the api you want to explore to outside
+  return {
+    getName : getMyname
+  }
+});
+              </pre>
+
+         <h3><small>use <code>this.need</code> to resolve </small>Dependence <small>between modules</small></h3>
+
+        <p>here is a little different with CMD stand,but I prefer it.</p>
+<pre class="prettyprint lang-javascript linenums">
+//module A
+define('module.A',function(){
+  //explore module.A.sing Api
+  return {
+    sing : function(song){
+      console.log(song + 'is playing');
+    }
+  }
+});
+
+//module B
+define('module.B',function(){
+  //get module.A
+  var A = this.need('module.A');
+  //call sing api
+  A.sing('Heal the world');
+});
+              </pre>
+
+        
+<h3><small>support unlimited tree data structor</small> Template Enginee </h3>
+
+        <p>the <code>your.class.music</code> will be called by <code>scope</code> ,with two different
+          style define.</p> <pre class="prettyprint lang-html linenums"><xmp><div class="col-md-4 well">
+    <div scope="your.class.music">
+      <p>{{ title }} </p>
+      <ul>
+        <li repeat="singer in singers">
+          <span>{{singer.name}}</span> 
+          <ul>
+            <li repeat="song in singer.songs">
+            <span>{{song.name}}</span>
+            <a href="{{song.url}}">{{song.url}}</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div></xmp></pre>
+
+        
+<h3><small>First style, the CMD style,return the data api.</small></h3>
+
+        <div class="row">
+          <div class="col-md-8">
+<pre class="prettyprint lang-javascript linenums">
+define('your.class.music',function(){
+  var myMusicfromDB = {
+    title: 'Welcome to my Music zone',
+    singers: [{
+        name: 'Michael Jackson',
+        songs:[{
+          url:'http://some.mp3',
+          name:'heal the world'
+        },{
+          url:'http://beatit.mp3',
+          name:'black and white'
+        }]
+      }, {
+        name: 'Avril Lavigne',
+        songs:[{
+          url:'http://some.mp3',
+          name:'Smile'
+        },{
+          url:'http://some.mp3',
+          name:'Girl friend'
+        }]
+      },{
+        name: 'Lady Gaga',
+        songs:[{
+          url:'http://some.mp3',
+          name:'Pock face'
+        },{
+          url:'http://some.mp3',
+          name:'Bad romance'
+        }]
+      },{
+        name: 'Rihanna',
+        songs:[{
+          url:'http://some.mp3',
+          name:'umbrella'
+        }]
+      } 
+    ]
+  }
+  return myMusicfromDB
+})
+</pre>
+
+          </div>
+          <div class="col-md-4 well">
+            <div scope="your.class.music">
+              <p>{{ title }}</p>
+              <ul>
+                <li repeat="singer in singers"> <span>{{singer.name}}</span> 
+                  <ul>
+                    <li repeat="song in singer.songs"> <span>{{song.name}}</span>
+ <a href="{{song.url}}">{{song.url}}</a>
+
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+         <h3><small>Second style, return a Controller and inject data to <code>this</code></small></h3>
+
+        <div class="row">
+          <div class="col-md-8"> <pre class="prettyprint lang-javascript linenums">
+define('my.class.music',function(){
+  var musicDB = this.need('your.class.music');
+  return function(){
+    this.inject(musicDB);
+  };
+});</pre>
+
+          </div>
+          <div class="col-md-4 well">
+            <div scope="my.class.music">
+              <p>{{ title }}</p>
+              <ul>
+                <li repeat="singer in singers"> <span>{{singer.name}}</span> 
+                  <ul>
+                    <li repeat="song in singer.songs"> <span>{{song.name}}</span>
+ <a href="{{song.url}}">{{song.url}}</a>
+
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+         <h3>Nested <small><code>scope</code></small></h3>
+
+        <div class="row">
+          <div class="col-md-8"> <pre class="prettyprint lang-html linenums"><xmp><div scope="ctl.father">
+    <p>Name: {{ name }}</p>
+    <div scope = "ctl.son">
+     <p>Name : {{ name }}</p> <!-- cover father's pro -->
+     <p>Skill : {{ skill }}</p> 
+     <p>Where : {{ where }}</p> <!-- inherit from father -->
+</div></xmp></pre>
+ <pre class="prettyprint lang-javascript linenums">
+define('ctl.father',function(){
+  return function(){
+    this.name = "Peter";
+    this.where = "China";
+  };
+});
+
+
+define('ctl.son',function(){
+  return function(){
+    this.name = "Tomas";
+    this.skill = "dance";
+  };
+});
+ </pre>
+          </div>
+          <div class="col-md-4 well">
+            <div scope="ctl.father">
+              <p>Name : {{ name }}</p>
+              <div scope="ctl.son">
+                <p>Name : {{ name }}</p>
+                <!-- cover father's pro -->
+                <p>Skil : {{ skill }}</p>
+                <p>Where : {{ where }}</p>
+                <!-- inherit from father -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        
+<h3><small>what's </small>Two-way binding</h3>
+
+        <p>Most templating systems bind data in only one direction: they merge template and
+          model components together into a view, but Two-way binding template really works
+          in different way.It's clear to understand both of them through the below diagrams(The
+          diagrams are from <a href="http://angularjs.org/">angularjs.org</a>,thanks :)).</p>
+        <div
+        class="form-group text-center">
+          <img class="" src="http://docs.angularjs.org/img/One_Way_Data_Binding.png" alt="One-way binding">
+          <img class="" src="http://docs.angularjs.org/img/Two_Way_Data_Binding.png" alt="Two-way binding">
+      </div>
+      <div class="form-group">
+         <h3><small>Let's through several exampls to know how it works in RiverJS.</small></h3>
+
+      </div>
+      <p>when the data changed in memory,the data in view will also be updated automaticly</p>
+      <p>Sync data from memory to view</p>
+      <div class="row">
+        <div class="col-md-8">
+<pre class="prettyprint lang-html linenums"><xmp><div scope="your.firstpage.controller">
+  <p>{{ name }} </p>
+  <button jclick="changeName()">change the name</button>
+</div>
+</xmp></pre>
+
+<pre class="prettyprint lang-javascript linenums">
+define('your.firstpage.controller',function(){
+  return function(){
+    var scope = this;
+    scope.name = "Jonathan"
+
+    scope.changeName = function(){
+      if('Jonathan' === scope.name){
+        scope.name = 'River';
+      }else{
+        scope.name = 'Jonathan'
+      }
+    }
+  }
+});
+</pre>
+
+        </div>
+        <div class="col-md-4">
+          <div class="well">
+            <div scope="your.firstpage.controller">
+              <p>{{ name }}</p>
+              <button jclick="changeName()" class="btn btn-primary">change the name</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p>when the data changed in view,the data in memory will also be updated automaticly</p>
+      <p>Sync data from view to memory</p>
+      <div class="row">
+        <div class="col-md-8"> <pre class="prettyprint lang-html linenums"><xmp><div scope="controller">
+  <label for="">name:</label>
+  <input type="text" class="form-control" jbind="name">
+  <hr>
+  <p>Hello {{ name }} !</p>
+  <p>the {{ name }} ?</p>
+  <p>world {{ name }} !</p>
+  <p>and {{ name }} .</p>
+</div>
+    </xmp></pre>
+ <pre class="prettyprint lang-javascript linenums">
+define('controller',function(){
+  return function(){
+    this.name = "Tomas"
+  }
+});
+    </pre>
+
+          <div class="alert alert-info"><strong>Notice : </strong>scope affects on html area ,the different <code>scope</code> is
+            divided by different html tag area,you can see in the two examples upon,we use
+            same <code>name</code> in different <code>scope</code>, they work on their own isolate
+            area.</div>
+        </div>
+        <div class="col-md-4">
+          <div class="well" scope="controller">
+            <label for="sample-name">name:</label>
+            <input id="sample-name" type="text" class="form-control" jbind="name">
+            <hr>
+            <div>
+              <p>Hello {{ name }} !</p>
+              <p>the {{ name }} ?</p>
+              <p>world {{ name }} !</p>
+              <p>and {{ name }} .</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+<h3>Extend <small>template enginee with</small>Two-way binding</h3>
+
+      <p>Please regesit your components under <code>river.grammer</code> namespace,for example
+        a component named <code>ele-example</code>
+
+      </p>
+      <div class="row">
+        <div class="col-md-8">
+<pre class="prettyprint lang-html linenums"><xmp><div ele-example="any thing you want to passed">
+</div>
+</xmp></pre>
+
+<pre class="prettyprint lang-javascript linenums">
+define('river.grammer.ele-example',function(){
+  return function(str){
+    //this.node is the current dom reference
+    //this.scope is the reference defined in Controller 
+    //str is the data you marked in html 
+    this.node.textContent = str;
+  }
+});
+</pre>
+
+          <div class="alert alert-info"><strong>Notice:</strong> here we use <a href="http://www.w3.org/DOM/" target="_blank"><strong>W3C DOM Api</strong></a> to
+            manpulate html,if you want to use 3rd-party dom api like jQuery, you can use it
+            with <code>$(this.node)</code>
+
+          </div>
+        </div>
+        <div class="col-md-4 well">
+          <div ele-example="any thing you want to passed"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+<pre class="prettyprint lang-html linenums"><xmp><div my-time class="well">
+    <span>Beijing :</span>
+    <p>{{Beijing}}</p>
+    <span>PaloAuto:</span>
+    <p>{{PaloAuto}}</p>
+</div>
+</xmp></pre>
+
+<pre class="prettyprint lang-javascript linenums">
+define('river.grammer.my-time', function() {
+  var $Date = this.need('river.core.Date');
+
+  return function() {
+
+    var scope = this.scope;
+    //if there is no 'Controler' point to 'scope',this.scope will be the rootScope;
+
+    var timezone = {
+      bj: '+8',
+      pa: '-7'
+    };
+
+    function update() {
+      var format = 'yyyy-MM-dd h:mm:ss';
+      scope.Beijing = $Date.getDateByCity(timezone.bj).toString(format);
+      scope.PaloAuto = $Date.getDateByCity(timezone.pa).toString(format);
+      scope.apply();
+    }
+
+    var timeID = setInterval(function() {
+      update();
+    }, 1000);
+
+    update();
+
+    scope.stop = function() {
+      clearInterval(timeID);
+    };
+  };
+});
+</pre>
+
+          <div class="alert alert-info"><strong>Notic:call </strong>  <code>scope.apply()</code>
+will make the changes affet.It's
+            a very useful api, expecially when you intergrate 3rd-party compoments into riverjs,for
+            example jquery-ui ,etc.</div>
+        </div>
+        <div class="col-md-4">
+          <div my-time class="well"> <span>Beijing :</span>
+
+            <p>{{Beijing}}</p> <span>PaloAuto:</span>
+
+            <p>{{PaloAuto}}</p>
+          </div>
+        </div>
+      </div>
+       <h3><small>you can free</small> Organize <small>your code without any restrict.</small></h3>
+
+      <p>Here I use the this website's code organization as a example. <span class="alert-danger"> RiverJS doesn't supply many tools like $http,$pub,$sub,etc,you need to wrap them by your self or send email to me :) for help.</span>Cause
+        RiverJS it not only try to speed up your daily work as a tool or a framework but
+        what's more important is try to tell how to program in a more smart way.</p>
+      <div
+      class="form-group text-center">
+         <h3><small>river-js website</small></h3>
+
+        <img src="https://dl.dropboxusercontent.com/u/236290402/riverjs/riverjs-orginaze.png"
+        alt="free organize">
+    </div>
+     <h3><small>what's the</small> Magic <small> behind RiverJS</small></h3>
+
+    <p>After using two-way binding framework like AngularJS(by google) or RiverJS(by
+      Jonathan),or some lib else.Maybe you are interest in the mechanism behind it,such
+      as how it works or how it makes？In AngularJS,there are many concepts need to learn,it
+      's a sharp weapon for front-end developing.And RiverJS is very easy to use and
+      it's very small,but it also contains powerful feature like a smart fish in big
+      river.Let's have a look how the magic power works in RiverJS and AngularJS.</p>
+     <h3><small>what's RiverJS did when</small> Startup <small></small></h3>
+
+    <p>At startup RiverJS one main job is to transform DOM to EOM via <code>river.grammer</code> system.The
+      EOM Expression Object Model is a dom reference cache which is constructed by the
+      map you marked in html via the <code>{{ expression }}</code>.And then RiverjS use
+      the internal <b>Model</b>
+object to bind scope and view togather,it's like a bridge
+      for syncing data when any changes happed at each view side and scope side.AngularJS
+      worked as right diagram.</p>
+    <div class="form-group text-center">
+       <h3><small>Startup</small></h3>
+
+      <img width="600px" src="https://dl.dropboxusercontent.com/u/236290402/riverjs/riverjs-startup.svg"
+      alt="riverjs-startup">
+      <img src="http://docs.angularjs.org/img/guide/concepts-startup.png" alt="angularjs-startup">
+    </div>
+     <h3><small>How Riverjs works at </small> Runtime </h3>
+
+    <p>Riverjs use native Dom event ,network event or developer customize event to response
+      changing.There is no infinity data loop check.The simple life circle is still driven
+      by event.Once the <code>scope.apply</code> is called,RiverJS <code>compare system</code>
+will
+      be wake up,and then it will deside whether to sync data or sync to which side.The
+      right diagram is the AngularJS's work way.</p>
+    <div class="form-group text-center">
+       <h3><small>Runtime</small></h3>
+
+      <img height="300px" src="https://dl.dropboxusercontent.com/u/236290402/riverjs/riverjs-runtime.svg"
+      alt="riverjs-startup">
+      <img src="http://docs.angularjs.org/img/guide/concepts-runtime.png" alt="angularjs-startup">
+    </div>
+    <div class="page-footer">
+      <p>According I'm busy on my daily office work,the current version is not tested solid,it
+        will be better in the next version, if you got any questinon or any suggestion
+        , or want to report a bug, please feel free to connect me through <a target="_blank"
+        href="http://weibo.com/hunterdding">weibo</a>, <a target="_blank" href="https://twitter.com/hunterdding">twitter</a>,
+        <a
+        target="_blank" href="https://plus.google.com/107697077241482931226">google+</a> <a target="_blank" href="https://github.com/zhang-ning">github</a>.</p>
+      <p>All rights reserved by <a href="http://besideriver.com/#/type/about-us" rel="author">Jonathan</a> 2013
+        <a
+        href="http://opensource.org/licenses/BSD-3-Clause">BSD license</a>
+      </p>
+    </div>
+    </div>
+  </body>
+
+</html>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-40875477-2', 'besideriver.com');
+    ga('send', 'pageview');
+
+</script>
