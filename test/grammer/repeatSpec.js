@@ -73,6 +73,31 @@ main(function(){
       expect(dom.textContent).not.toMatch(/undefined/);
     });
 
+    it('should work when put data or remove data', function() {
+      define('spec.repeat',function(){
+        return function(){
+          var scope = this;
+          this.users = [1,2,3];
+          this.add = function (no) {
+            //scope.users.push(4);
+          }
+        }
+      });
+      var dom = $compile(
+        '<div scope="spec.repeat">' +
+          '<span id="add" jclick="add"></span><span jclick="rmove"></span>' +
+          '<ul >' +
+            '<li repeat="lib in users">' +
+               '<span>{{ user}}</span>' +
+            '</li>' +
+          '</ul>' +
+        '</div>'); 
+      $scan(dom);
+      var button = dom.querySelector('#add');
+//      $trigger('click',button);
+      expect(dom.textContent).not.toMatch(/undefined/);
+    });
+
     it("should work when there more then 3 layer nest structor.",function(){
       define('spec.repeat',function(){
         return function(){
