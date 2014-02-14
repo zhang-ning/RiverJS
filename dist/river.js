@@ -216,7 +216,7 @@ define('river.core.Date', function() {
     getDateByCity: getDateByCity
   };
 });
-define('river.core.model', function() {
+define('river.core.model', function() { //@sourceURL=../lib/core/model.js
 
   var tools = this.need('river.core.tools');
 
@@ -229,25 +229,21 @@ define('river.core.model', function() {
   var each     = tools.each;
   var loop     = tools.loop;
 
-  function update(value, eom, last) {
+  function update(value, key, eom) {
     if (isString(value) || isNumber(value)) {
-      loop(eom, function(ele, i) {
-        if(ele.expression)
+      if(eom && eom[key]){
+        loop(eom[key], function(ele, i) {
           ele.element.nodeValue = ele.expression.replace(/{{.*}}/, value);
-        //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
-      });
-    } else if (isArray(value)) {
-      if(last && value.length > last.length){
-        eom[index].element.parentNode.appendChild(eom[index].element.cloneNode(true));
-      }else if(last && value.length < last.length){
-        eom[index].element.parentNode.removeChild(eom[index].element);
+          //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
+        });
       }
+    } else if (isArray(value)) {
       loop(value, function(item, index) {
-        update(item, eom, last);
+        update(item, index, eom[key][index]);
       });
     } else if (isObject(value)) {
       each(value, function(item, index) {
-        update(item, eom, last);
+        update(item, index, eom);
       });
     }
   }
@@ -267,8 +263,8 @@ define('river.core.model', function() {
       , last = lasts[this.$$ns];
 
     each(this, function(val, index) {
-      if (_eom[index] && !tools.expect(last[index]).toEqual(val)) {
-        update(val, _eom[index],last[index]);
+      if (_eom[index] && last[index] !== val) {
+        update(val, index, _eom);
         last[index] = tools.clone(val);
       }
     });
@@ -390,7 +386,7 @@ define('river.core.tools', function() {
     this._diffFlag = true;
       for(var x in source){
         var isObject = type('Object',source[x]) || type('Array',source[x]); 
-        if(isObject){
+        if(isObject && target){
           diff.call(this,target[x],source[x]);
         }else{
           if(!target){
