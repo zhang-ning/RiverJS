@@ -22,26 +22,22 @@ describe("test code.tool", function() {
   describe("tool.clone test case", function() {
 
     beforeEach(function(){
-      value = tool.clone(target,source);
+      value = tool.clone(source);
     });
 
     it('deep clone', function() {
-      expect(target.c.a).toBe(3);
-      expect(target.c.b).toBe(4);
+      expect(value.c.a).toBe(3);
+      expect(value.c.b).toBe(4);
     });
 
-    it('value is target', function() {
-      expect(target).toBe(value);
-    });
   });
-
 
   describe('tool.expect', function() {
 
     var data;
 
     beforeEach(function(){
-     data = tool.clone({},source);
+     data = tool.clone(source);
     });
 
     it('diff the value not the reference', function() {
