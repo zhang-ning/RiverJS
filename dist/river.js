@@ -254,7 +254,7 @@ define('river.core.model', function() { //@sourceURL=../lib/core/model.js
     this.$$ns = ns;
     for (var x in ref) {
       this[x] = ref[x];
-      lasts[ns] = tools.clone(ref);
+      lasts[ns] = ref;//tools.clone(ref);
     }
   }
 
@@ -265,7 +265,7 @@ define('river.core.model', function() { //@sourceURL=../lib/core/model.js
     each(this, function(val, index) {
       if (_eom[index] && last[index] !== val) {
         update(val, index, _eom);
-        last[index] = tools.clone(val);
+        last[index] = val;//tools.clone(val);
       }
     });
   };
