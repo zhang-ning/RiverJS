@@ -64,4 +64,12 @@ describe("test code.tool", function() {
     });
 
   });
+
+  describe("tool: clone array", function() {
+    var source = [1,2,3,4];
+    it('should still array after clone', function() {
+      var dest = tool.clone(source);
+      expect(tool.isArray(dest)).toBe(true);
+    });
+  });
 });

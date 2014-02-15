@@ -80,12 +80,15 @@ main(function(){
           this.users = [1,2,3];
           this.add = function (no) {
             scope.users.push(4);
+          };
+          this.remove = function(){
+            scope.users.shift();
           }
         }
       });
       var dom = $compile(
         '<div scope="spec.repeat">' +
-          '<span id="add" jclick="add"></span><span jclick="rmove"></span>' +
+          '<span id="add" jclick="add"></span><span id="remove" jclick="remove"></span>' +
           '<ul>' +
             '<li repeat="lib in users">' +
                '<span>{{ user}}</span>' +
@@ -93,8 +96,12 @@ main(function(){
           '</ul>' +
         '</div>'); 
       $scan(dom);
-      var button = dom.querySelector('#add');
-      $trigger('click',button);
+      var add = dom.querySelector('#add');
+      var remove = dom.querySelector('#remove');
+      $trigger('click',add);
+      expect(dom.textContent).toEqual('1234');
+      $trigger('click',remove);
+      console.log(dom.textContent);
       //not work to-do
       expect(dom.textContent).not.toMatch(/undefined/);
     });

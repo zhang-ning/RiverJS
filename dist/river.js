@@ -66,7 +66,7 @@ define('river.engine',function() {
     if (doc.attributes && doc.attributes.length) {
       tool.loop(doc.attributes, function(attr) {
         var key = attr.nodeName;
-        var value = attr.nodeValue.replace(reg, '');
+        var value = attr.textContent.replace(reg, '');
         var grammer = loadGrammer(key);
 
         if ('repeat' === key) {
@@ -100,22 +100,22 @@ define('river.engine',function() {
   }
 
   function checkText(doc, context) {
-    if (reg.test(doc.nodeValue)) {
-      var key = doc.nodeValue.replace(/\r|\n/g,'').replace(reg, '');
+    if (reg.test(doc.textContent)) {
+      var key = doc.textContent.replace(/\r|\n/g,'').replace(reg, '');
       if (!context.eom[key]) {
         context.eom[key] = [];
       }
       context.eom[key].push({
         element: doc,
-        expression: doc.nodeValue
+        expression: doc.textContent
       });
-      doc.nodeValue = doc.nodeValue.replace(/\r|\n/g,'').replace(/{{.*}}/, context.scope[key]);
+      doc.textContent = doc.textContent.replace(/\r|\n/g,'').replace(/{{.*}}/, context.scope[key]);
     }
   }
 
   function checkChildren(doc, context) {
-    if (doc.childNodes && doc.childNodes.length) {
-      tool.loop(doc.childNodes, function(child) {
+    if (doc.children && doc.children.length) {
+      tool.loop(doc.children, function(child) {
         scan(child, context);
       });
     }
@@ -233,7 +233,7 @@ define('river.core.model', function() { //@sourceURL=../lib/core/model.js
     if (isString(value) || isNumber(value)) {
       if(eom && eom[key]){
         loop(eom[key], function(ele, i) {
-          ele.element.nodeValue = ele.expression.replace(/{{.*}}/, value);
+          ele.element.textContent = ele.expression.replace(/{{.*}}/, value);
           //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
         });
       }
@@ -573,16 +573,16 @@ define("river.grammer.repeat", function() {
     if (doc.attributes && doc.attributes.length) {
       Array.prototype.forEach.call(doc.attributes, function(attr) {
 
-        if (reg.test(attr.nodeValue)) {
-          var k = attr.nodeValue.replace(reg, '').replace(key + '.', '');
+        if (reg.test(attr.textContent)) {
+          var k = attr.textContent.replace(reg, '').replace(key + '.', '');
           if (!eom[k]) {
             eom[k] = [];
           }
           eom[k].push({
             element: attr,
-            expression: attr.nodeValue
+            expression: attr.textContent
           });
-          attr.nodeValue = attr.nodeValue.replace(/{{.*}}/, scope[k]);
+          attr.textContent = attr.textContent.replace(/{{.*}}/, scope[k]);
         }
 
         if ('repeat' === attr.nodeName) {
@@ -591,27 +591,27 @@ define("river.grammer.repeat", function() {
           context.scope = scope;
           context.reg = reg;
           context.eom = eom;
-          repeat.call(context, attr.nodeValue.replace(reg, ''));
+          repeat.call(context, attr.textContent.replace(reg, ''));
         }
       });
     }
-    if (reg.test(doc.nodeValue)) {
-      var k = doc.nodeValue.replace(reg, '').replace(key + '.', '');
+    if (reg.test(doc.textContent)) {
+      var k = doc.textContent.replace(reg, '').replace(key + '.', '');
       if (!eom[k]) {
         eom[k] = [];
       }
       eom[k].push({
         element: doc,
-        expression: doc.nodeValue
+        expression: doc.textContent
       });
       //this change is for identify two case: 
       //  1. scope = {}
       //  2. scope = "string" or number
       var value  = $tool.isObject(scope) ? scope[k] : scope;
-      doc.nodeValue = doc.nodeValue.replace(/{{.*}}/, value);
+      doc.textContent = doc.textContent.replace(/{{.*}}/, value);
     }
-    if (doc.childNodes && doc.childNodes.length && !hasRepeat) {
-      Array.prototype.forEach.call(doc.childNodes, function(child) {
+    if (doc.children && doc.children.length && !hasRepeat) {
+      Array.prototype.forEach.call(doc.children, function(child) {
         trans(reg, child, scope, key, eom);
       });
     }
