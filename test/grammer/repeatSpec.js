@@ -83,6 +83,9 @@ main(function(){
           };
           this.remove = function(){
             scope.users.shift();
+          };
+          this.show = function(user){
+            console.log(user);
           }
         }
       });
@@ -90,8 +93,8 @@ main(function(){
         '<div scope="spec.repeat">' +
           '<span id="add" jclick="add"></span><span id="remove" jclick="remove"></span>' +
           '<ul>' +
-            '<li repeat="lib in users">' +
-               '<span>{{ user}}</span>' +
+            '<li repeat="user in users">' +
+               '<span jclick="show(user)" class="su">{{ user}}</span>' +
             '</li>' +
           '</ul>' +
         '</div>'); 
@@ -102,6 +105,8 @@ main(function(){
       expect(dom.textContent).toEqual('1234');
       $trigger('click',remove);
       expect(dom.textContent).toEqual('234');
+      var show = dom.querySelector('.su');
+      $trigger('click',show);
       //not work to-do
       expect(dom.textContent).not.toMatch(/undefined/);
     });
