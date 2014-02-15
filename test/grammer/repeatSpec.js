@@ -101,7 +101,7 @@ main(function(){
       $trigger('click',add);
       expect(dom.textContent).toEqual('1234');
       $trigger('click',remove);
-      console.log(dom.textContent);
+      expect(dom.textContent).toEqual('234');
       //not work to-do
       expect(dom.textContent).not.toMatch(/undefined/);
     });
