@@ -119,6 +119,52 @@ main(function(){
       expect(dom.textContent).not.toMatch(/undefined/);
     });
 
+
+    it("should work when add/remove object data",function(){
+      var data = [];
+      define('spec.repeat',function(){
+        return function(){
+          var scope = this;
+          var users = this.users = [{name:'a'},{name:'b'},{name:'c'}];
+          this.add = function (no) {
+            scope.users.push({name:'d'});
+          };
+          this.remove = function(user){
+            var i = users.indexOf(user);
+            users.splice(i,1);
+            data.push(user);
+          };
+        }
+      });
+      var dom = $compile(
+        '<div scope="spec.repeat">' +
+        '<span id="add" jclick="add"></span>' +
+        '<ul class="users">' +
+        '<li repeat="user in users">' +
+        '<span jclick="remove(user)" class="su">{{user.name}}</span>' +
+        '</li>' +
+        '</ul>' +
+        '</div>'); 
+
+        $scan(dom);
+        var users = dom.querySelector('.users');
+        var add = dom.querySelector('#add');
+
+        $trigger('click',add);
+        expect(dom.textContent).toEqual('abcd');
+        expect(users.childNodes.length).toBe(4);
+        var remove = dom.querySelectorAll('.su');
+        for(var i=0;i<remove.length;i++){
+          $trigger('click',remove[i]);
+        }
+        expect(data).toEqual([{name:'a'},{name:'b'},{name:'c'},{name:'d'}]);
+        expect(users.childNodes.length).toBe(0);
+
+        //not work to-do
+        expect(dom.textContent).not.toMatch(/undefined/);
+
+    })
+
     it("should work when there more then 3 layer nest structor.",function(){
       define('spec.repeat',function(){
         return function(){
