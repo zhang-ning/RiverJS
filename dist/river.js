@@ -676,7 +676,7 @@ define("river.grammer.repeat", function() {
         }
 
         context.node = doc;
-        context.scope = rootScope;//scope; waiting for refactory
+        context.scope = scope;//scope; waiting for refactory
         context.reg = reg;
         context.eom = eom;
         if ('repeat' === attr.nodeName) {
