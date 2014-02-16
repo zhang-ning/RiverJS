@@ -74,39 +74,47 @@ main(function(){
     });
 
     it('should work when put data or remove data', function() {
+      var data = [];
       define('spec.repeat',function(){
         return function(){
           var scope = this;
-          this.users = [1,2,3];
+          var users = this.users = [1,2,3];
           this.add = function (no) {
             scope.users.push(4);
           };
-          this.remove = function(){
-            scope.users.shift();
+          this.remove = function(user){
+            var i = users.indexOf(user);
+            users.splice(i,1);
+            data.push(user);
           };
-          this.show = function(user){
-            console.log(user);
-          }
         }
       });
       var dom = $compile(
         '<div scope="spec.repeat">' +
-          '<span id="add" jclick="add"></span><span id="remove" jclick="remove"></span>' +
-          '<ul>' +
+          '<span id="add" jclick="add"></span>' +
+          '<ul class="users">' +
             '<li repeat="user in users">' +
-               '<span jclick="show(user)" class="su">{{ user}}</span>' +
+               '<span jclick="remove(user)" class="su">{{ user}}</span>' +
             '</li>' +
           '</ul>' +
         '</div>'); 
+
       $scan(dom);
+      var users = dom.querySelector('.users');
       var add = dom.querySelector('#add');
-      var remove = dom.querySelector('#remove');
+
       $trigger('click',add);
       expect(dom.textContent).toEqual('1234');
-      $trigger('click',remove);
-      expect(dom.textContent).toEqual('234');
-      var show = dom.querySelector('.su');
-      $trigger('click',show);
+      expect(users.childNodes.length).toBe(4);
+
+
+      var remove = dom.querySelectorAll('.su');
+      for(var i=0;i<remove.length;i++){
+        $trigger('click',remove[i]);
+      }
+      expect(data).toEqual([1,2,3,4]);
+      expect(users.childNodes.length).toBe(0);
+
       //not work to-do
       expect(dom.textContent).not.toMatch(/undefined/);
     });
