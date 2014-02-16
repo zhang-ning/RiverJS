@@ -143,10 +143,10 @@ main(function(){
       var dom = $compile(
         '<div scope="spec.repeat">' +
           '<ul>' +
-            '<li repeat="lib in m.frameworks">' +
+            '<li repeat="lib in m.frameworks" class="lib">' +
               '<span>{{ lib.name }}</span>' +
               '<ul>' + 
-                '<li repeat="user in fre.users">' + 
+                '<li repeat="user in fre.users" class="user">' + 
                   '<span>{{ user.comp }}</span>' +
                   '<ol><li repeat="ep in user.emp">{{ep.name}}</li></ol>' +
                 '</li>' +
@@ -155,6 +155,8 @@ main(function(){
           '</ul>' +
         '</div>');
       $scan(dom);
+      expect(dom.querySelectorAll('.lib').length).toBe(2);
+      expect(dom.querySelectorAll('.user').length).toBe(2);
       expect(dom.textContent).not.toMatch(/undefined/);
     });
   });
