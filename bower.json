@@ -1,6 +1,6 @@
 {
   "name": "riverjs",
-  "main": "dist/river.min.js",
+  "main": "dist/river.js",
   "version": "1.0.5",
   "homepage": "https://github.com/zhang-ning/RiverJS",
   "authors": [
@@ -25,6 +25,10 @@
     "tests",
     "doc",
     "lib",
-    "test"
+    "test",
+    "index.js",
+    "Gruntfile.js",
+    "karma.conf.js",
+    "Makefile"
   ]
 }
