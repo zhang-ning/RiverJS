@@ -1,11 +1,9 @@
 {
   "name": "riverjs",
-  "main": "dist/river.js",
   "version": "1.0.5",
+  "main": "dist/river.js",
   "homepage": "https://github.com/zhang-ning/RiverJS",
-  "authors": [
-    "zhang-ning <hunter.dding@gmail.com>"
-  ],
+  "authors": ["zhang-ning <hunter.dding@gmail.com>"],
   "description": "a simple font-end framework with extendable two-way binding",
   "keywords": [
     "two-way",
