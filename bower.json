@@ -1,7 +1,7 @@
 {
   "name": "riverjs",
   "main": "dist/river.min.js",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "homepage": "https://github.com/zhang-ning/RiverJS",
   "authors": [
     "zhang-ning <hunter.dding@gmail.com>"
