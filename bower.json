@@ -18,9 +18,9 @@
   ],
   "license": "MIT",
   "ignore": [
-    ".*",
-    "node_modules",
-    "bower_components",
+    "*",
+    "*.json",
+    "*.md",
     "test",
     "tests",
     "doc",
