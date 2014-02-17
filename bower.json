@@ -27,6 +27,8 @@
     "index.js",
     "Gruntfile.js",
     "karma.conf.js",
-    "Makefile"
+    "Makefile",
+    "river.map",
+    "dist"
   ]
 }
