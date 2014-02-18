@@ -9,11 +9,9 @@ main(function(){
     var foo,me;
     beforeEach(function(){
       foo = {
-        ctrl : function(){
-          if(me.msg === 'hello'){
-            me.msg = 'world';
-          }else{
-            me.msg = 'hello';
+        ctrl : function(event,data){
+          if(event.keyCode == 13){
+            me.msg = 'hello world';
           }
         }
       };
@@ -27,30 +25,33 @@ main(function(){
         };
       });
 
-      var dom = $compile('<div scope="spec.jclick">' +
-          '<button jon="keypress | clickCtrl"></button>' +
+      var dom = $compile('<div scope="spec.jon">' +
+          '<input type="text" jon="keydown | ctrl"/>' +
           '<p>{{ msg }}</p>' +
           '</div>');
       $scan(dom);
-      var button = dom.querySelector("button");
+      var input = dom.querySelector("input");
       var msg = dom.querySelector("p");
 
-     // $key('keydown',13,button);
-      foo.result1 = msg.textContent;
-      //$trigger('keydown',13,button);
+      $key('keydown',14,'enter',input);
       foo.result2 = msg.textContent;
+
+      $key('keydown',13,'enter',input);
+      foo.result1 = msg.textContent;
+
     });
 
     it("clickCtrl should be called twice",function(){
-      //expect(foo.clickCtrl.calls.length).toEqual(2);
+      expect(foo.ctrl.calls.length).toEqual(2);
     });
 
     it("first result should be hello",function(){
-      //expect(foo.result1).toEqual("hello");
+      expect(foo.result2).toEqual('undefined');
     });
 
-    it("second result should be world",function(){
-      //expect(foo.result2).toEqual("world");
+    it("first result should be hello",function(){
+      expect(foo.result1).toEqual("hello world");
     });
+
   });
 });
