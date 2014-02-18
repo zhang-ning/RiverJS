@@ -163,15 +163,30 @@ define('river.scenario',function(){
    * in the future
    */
   function _trigger (type,element){
-
     //to-do , cross IE < 9
     var event = document.createEvent('MouseEvents');
     event.initEvent(type,true,true);
     element.dispatchEvent(event);
   }
 
+  function _keyboard (type, keycode,charCode, element){
+    //to-do , cross IE < 9
+    var evt = document.createEvent('Events');
+    evt.initEvent(type, true, true);
+    evt.view = null;
+    evt.altKey = false;
+    evt.ctrlKey = false;
+    evt.shiftKey = false;
+    evt.metaKey = false;
+    evt.keyCode = keycode;
+    evt.charCode = charCode;
+
+    element.dispatchEvent(evt);
+  }
+
   return {
-    trigger:_trigger
+    trigger:_trigger,
+    key:_keyboard
   };
 });
 define('river.core.Date', function() {
@@ -597,6 +612,34 @@ define('river.grammer.jcompile',function(){
     //element.innerHTML = scope[key];
 //    console.log(this.eom.msg);
   };
+});
+define('river.grammer.jon', function() {
+  function on (str,scope,element,data) {
+    var expression = str.replace(/\(.*\)/,'');
+
+    var type = expression.replace(/\s*\|.*/,'');
+    var key  = expression.replace(/.*\|\s*/,'');
+    var fn = scope[key];
+
+    var param = /\((.*)\)/;
+    var target = str.match(param);
+    var args = [];
+
+    if(target && target.length){
+      args = target[1].split(',');
+      //Array.prototype.indexOf.call(this.node.parentNode,this.node);
+    }
+
+    var eom = this.eom;
+
+    var event = 'on' + type;
+
+    element[event] = function(event){
+      fn.apply(element,[event,data]);
+      scope.apply();
+    };
+  }
+  return on;
 });
 define("river.grammer.repeat", function() {
   var $tool = this.need('river.core.tools')
