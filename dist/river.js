@@ -18,14 +18,14 @@ var _$river = {
           need: function(key) {
             key = key.toLowerCase();
             var api = boxes[key] && boxes[key].call(context,exports,require,module) || undefined;
-            api = Object.keys(exports).length ? exports : api;
+            api = Object.keys(module.exports).length ? module.exports : api;
             return api;
           }
         };
         var module = context
           , exports = module.exports = {}
           , require = module.need;
-        fn.call(context);
+        fn.call(context,exports,require,module);
       }
     };
   }
