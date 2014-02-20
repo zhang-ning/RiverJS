@@ -17,9 +17,14 @@ var _$river = {
         var context = {
           need: function(key) {
             key = key.toLowerCase();
-            return boxes[key] && boxes[key].call(context) || undefined;
+            var api = boxes[key] && boxes[key].call(context,exports,require,module) || undefined;
+            api = Object.keys(exports).length ? exports : api;
+            return api;
           }
         };
+        var module = context
+          , exports = module.exports = {}
+          , require = module.need;
         fn.call(context);
       }
     };
@@ -579,7 +584,7 @@ define('river.grammer.jChange', function() {
   return change;
 });
 define('river.grammer.jclick', function() {
-  function click (str,scope,element,data) {
+  function click (str,scope,element,repeatscope) {
     var key = str.replace(/\(.*\)/,'');
     var fn = scope[key];
 
@@ -592,9 +597,20 @@ define('river.grammer.jclick', function() {
       //Array.prototype.indexOf.call(this.node.parentNode,this.node);
     }
 
+    var argsdata = [];
+    for (var i = 0, len = args; i < len; i++) {
+      var item = scope[args[i]] ? scope[args[i]] : args[i];
+      argsdata.push(item);
+    }
+
+    //to-do hot-fix
+    if(repeatscope){
+      argsdata = [repeatscope];
+    }
+
     var eom = this.eom;
-    element.onclick = function(){
-      fn.apply({},[data]);
+    element.onclick = function(e){
+      fn.apply(element,argsdata);
       scope.apply();
     };
   }
@@ -614,7 +630,7 @@ define('river.grammer.jcompile',function(){
   };
 });
 define('river.grammer.jon', function() {
-  function on (str,scope,element,data) {
+  function on (str,scope,element,repeatscope) {
     var expression = str.replace(/\(.*\)/,'');
 
     var type = expression.replace(/\s*\|.*/,'');
@@ -630,12 +646,23 @@ define('river.grammer.jon', function() {
       //Array.prototype.indexOf.call(this.node.parentNode,this.node);
     }
 
-    var eom = this.eom;
 
+    var argsdata = [];
+    for (var i = 0, len = args.length; i < len; i++) {
+      var item = scope[args[i]] ? scope[args[i]] : args[i];
+      argsdata.push(item);
+    }
+
+    //to-do hot-fix
+    if(repeatscope){
+      argsdata = [repeatscope];
+    }
+
+    var eom = this.eom;
     var event = 'on' + type;
 
-    element[event] = function(event){
-      fn.apply(element,[event,data]);
+    element[event] = function(e){
+      fn.apply(element,[e].concat(argsdata));
       scope.apply();
     };
   }
