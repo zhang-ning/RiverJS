@@ -17,15 +17,15 @@ var _$river = {
         var context = {
           need: function(key) {
             key = key.toLowerCase();
-            var api = boxes[key] && boxes[key].call(context,exports,require,module) || undefined;
-            api = Object.keys(module.exports).length ? module.exports : api;
+            var mod = Object.create(context);
+            mod.exports = {}; //reset,
+            var api = boxes[key] && boxes[key].call(mod,mod.exports,mod.need,mod) || undefined;
+            api = Object.keys(mod.exports).length ? mod.exports : api;
             return api;
-          }
+          },
+          exports: {}
         };
-        var module = context
-          , exports = module.exports = {}
-          , require = module.need;
-        fn.call(context,exports,require,module);
+        fn.call(context,context.exports,context.need,context);
       }
     };
   }
