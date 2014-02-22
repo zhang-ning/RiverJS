@@ -3,6 +3,7 @@
 var command = {}
   , fs = require('fs')
   , $path = require('path')
+  , package = require('../package')
   , exclude = /node_modules/
   , targetfile = /\.js\s*$/
   , rootPath;
@@ -11,6 +12,7 @@ command.help = function(){
   console.log([
     "",
     "welcome to use riverjs build tool",
+    "riverjs version : " + package.version,
     "How to use ?",
     "Build ------------------ riverjs build [project path]",
     "Help ------------------- riverjs help",
