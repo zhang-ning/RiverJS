@@ -2,6 +2,7 @@
 
 var command = {}
   , fs = require('fs')
+  , $path = require('path')
   , exclude = /node_modules/
   , targetfile = /\.js\s*$/
   , rootPath;
@@ -39,8 +40,10 @@ function begin(path) {
   path = path.replace(/\/\s*$/,'');
   rootPath = path;
   readPath(path);
-  clean(path + '/build');
-  buildFile(path+ '/build');
+  clean($path.join(path,'build'));
+  //clean(path + '/build');
+  buildFile($path.join(path,'build'));
+  //buildFile(path+ '/build');
 }
 
 function readPath(path){
@@ -91,7 +94,9 @@ function clean(path){
 }
 
 function buildFile(path) {
-  fs.mkdir(path)
+  fs.mkdir(path,function(err){
+    copyDist();
+  });
 }
 
 function header(path) {
@@ -109,3 +114,19 @@ function appendToBuffer(data) {
   });
 }
 
+/**
+ * copy river.js river.min.js from dist folder
+ * 
+ */
+function copyDist() {
+  var src = ['river.js','river.min.js'];
+  for (var i = 0, len = src.length; i < len; i++) {
+    write(src[i]);
+  }
+
+  function write(name){
+    fs.readFile($path.join(__dirname,'../dist',name),function(err,buf){
+      fs.writeFile($path.join(rootPath,'build',name),buf);
+    });
+  }
+}

@@ -32,8 +32,13 @@ var _$river = {
 };
 _$river.module = _$river.sandbox();
 
-/*jshint unused:false */
+Object.create = Object.create || function(source){
+  var F = function () {}
+  F.prototype = source;
+  return new F();
+}
 
+/*jshint unused:false */
 
 /**
  *@name define
