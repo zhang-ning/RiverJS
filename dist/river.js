@@ -20,7 +20,7 @@ var _$river = {
             var mod = Object.create(context);
             mod.exports = {}; //reset,
             var api = boxes[key] && boxes[key].call(mod,mod.exports,mod.need,mod) || undefined;
-            api = Object.keys(mod.exports).length ? mod.exports : api;
+            api = typeof mod.exports === 'function' ? mod.exports : Object.keys(mod.exports).length ? mod.exports : api;
             return api;
           },
           exports: {}
