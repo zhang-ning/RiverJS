@@ -31,10 +31,6 @@ span.alert-danger {
   box-shadow:1px 1px 10px #ddd;
   background-color: #fff;
 }
-.new pre{
-  background-color: #fff;
-}
-
 .new .prettyprint.linenums:before{
   content:'new';
   color:#798fb1;
