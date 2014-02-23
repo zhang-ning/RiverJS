@@ -521,7 +521,13 @@ exports = module.exports = function(){
 <pre class="prettyprint lang-html linenums"><xmp><div ele-example="any thing you want to passed">
 </div>
 </xmp></pre>
-
+        </div>
+        <div class="col-md-4 well">
+          <div ele-example="any thing you want to passed"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
 <pre class="prettyprint lang-javascript linenums">
 define('river.grammer.ele-example',function(){
   return function(str){
@@ -532,16 +538,22 @@ define('river.grammer.ele-example',function(){
   }
 });
 </pre>
-
-          <div class="alert alert-info"><strong>Notice:</strong> here we use <a href="http://www.w3.org/DOM/" target="_blank"><strong>W3C DOM Api</strong></a> to
+        </div>
+        <div class="col-md-6 new">
+<pre class="prettyprint lang-javascript linenums">
+//@sourcefile: river/grammer/ele-example
+exports = module.exports = function(str,scope,element){
+  element.textContent = str;
+}
+</pre>
+        </div>
+      </div>
+      <div class="row">
+<div class="alert alert-info"><strong>Notice:</strong> here we use <a href="http://www.w3.org/DOM/" target="_blank"><strong>W3C DOM Api</strong></a> to
             manpulate html,if you want to use 3rd-party dom api like jQuery, you can use it
             with <code>$(this.node)</code>
 
           </div>
-        </div>
-        <div class="col-md-4 well">
-          <div ele-example="any thing you want to passed"></div>
-        </div>
       </div>
       <div class="row">
         <div class="col-md-8">
@@ -553,7 +565,22 @@ define('river.grammer.ele-example',function(){
 </div>
 </xmp></pre>
 
-<pre class="prettyprint lang-javascript linenums">
+
+
+          
+        </div>
+        <div class="col-md-4">
+          <div my-time class="well"> <span>Beijing :</span>
+
+            <p>{{Beijing}}</p> <span>PaloAuto:</span>
+
+            <p>{{PaloAuto}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+ <pre class="prettyprint lang-javascript linenums">
 define('river.grammer.my-time', function() {
   var $Date = this.need('river.core.Date');
 
@@ -585,21 +612,47 @@ define('river.grammer.my-time', function() {
     };
   };
 });
-</pre>
+</pre>       
+</div>
+<div class="col-md-6 new">
+<pre class="prettyprint lang-javascript linenums">
+//@sourcefile: river/grammer/my-time.js
+var $Date = require('river.core.Date');
 
-          <div class="alert alert-info"><strong>Notic:call </strong>  <code>scope.apply()</code>
-will make the changes affet.It's
-            a very useful api, expecially when you intergrate 3rd-party compoments into riverjs,for
-            example jquery-ui ,etc.</div>
-        </div>
-        <div class="col-md-4">
-          <div my-time class="well"> <span>Beijing :</span>
+exports = module.exports = function(str,scope,element) {
 
-            <p>{{Beijing}}</p> <span>PaloAuto:</span>
+  //if there is no 'Controler' point to 'scope',this.scope will be the rootScope;
 
-            <p>{{PaloAuto}}</p>
-          </div>
-        </div>
+  var timezone = {
+    bj: '+8',
+    pa: '-7'
+  };
+
+  function update() {
+    var format = 'yyyy-MM-dd h:mm:ss';
+    scope.Beijing = $Date.getDateByCity(timezone.bj).toString(format);
+    scope.PaloAuto = $Date.getDateByCity(timezone.pa).toString(format);
+    scope.apply();
+  }
+
+  var timeID = setInterval(function() {
+    update();
+  }, 1000);
+
+  update();
+
+  scope.stop = function() {
+    clearInterval(timeID);
+  };
+};
+</pre>      
+</div>
+      </div>
+      <div class="row">
+        <div class="alert alert-info"><strong>Notic:call </strong>  <code>scope.apply()</code>
+          will make the changes affet.It's
+          a very useful api, expecially when you intergrate 3rd-party compoments into riverjs,for
+          example jquery-ui ,etc.</div>
       </div>
        <h3><small>you can free</small> Organize <small>your code without any restrict.</small></h3>
 
