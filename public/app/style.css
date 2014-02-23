@@ -26,3 +26,17 @@ span.alert-danger {
 .btn{
     margin:0 10px 10px 0;
 }
+
+.new .prettyprint.linenums{
+  box-shadow:1px 1px 10px #ddd;
+  background-color: #fff;
+}
+.new pre{
+  background-color: #fff;
+}
+
+.new .prettyprint.linenums:before{
+  content:'new';
+  color:#798fb1;
+  text-transform:uppercase;
+}
