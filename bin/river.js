@@ -6,7 +6,10 @@ var command = {}
   , package = require('../package')
   , exclude = /node_modules/
   , targetfile = /\.js\s*$/
-  , rootPath;
+  , rootPath
+  , config = require('./config').get()
+  , dist = config.dist
+  , alias = config.alias;
 
 command.help = function(){
   console.log([
@@ -22,7 +25,7 @@ command.help = function(){
 };
 
 command.clean = function () {
-  clean(process.argv[3] + '/build');
+  clean(dist);
 }
 
 command.build = function (){
@@ -41,11 +44,9 @@ function begin(path) {
   if(!path) return command.help();
   path = path.replace(/\/\s*$/,'');
   rootPath = path;
+  clean(dist);
+  buildFile(dist);
   readPath(path);
-  clean($path.join(path,'build'));
-  //clean(path + '/build');
-  buildFile($path.join(path,'build'));
-  //buildFile(path+ '/build');
 }
 
 function readPath(path){
@@ -101,8 +102,11 @@ function buildFile(path) {
   });
 }
 
-function header(path) {
-  return 'define("'+ path +'",function(exports,require,module){';
+function header(ns) {
+  for(var x in alias){
+    ns = ns.replace(alias[x],x);
+  }
+  return 'define("'+ ns +'",function(exports,require,module){';
 }
 
 function footer() {
@@ -111,7 +115,7 @@ function footer() {
 
 
 function appendToBuffer(data) {
-  fs.appendFile(rootPath + '/build/app.js',data,function(err){
+  fs.appendFile($path.join(dist,'app.js'),data,function(err){
     if(err) throw err;
   });
 }
@@ -128,7 +132,7 @@ function copyDist() {
 
   function write(name){
     fs.readFile($path.join(__dirname,'../dist',name),function(err,buf){
-      fs.writeFile($path.join(rootPath,'build',name),buf);
+      fs.writeFile($path.join(dist,name),buf);
     });
   }
 }
