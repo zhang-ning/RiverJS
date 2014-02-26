@@ -7,7 +7,7 @@
     "test": "test"
   },
   "dependencies": {
-    "jsdom": "~0.5.7"
+    "uglify-js":"*"
   },
   "bin":{
     "riverjs":"bin/river.js"

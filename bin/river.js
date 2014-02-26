@@ -9,7 +9,8 @@ var command = {}
   , rootPath
   , config = require('./config').get()
   , dist = config.dist
-  , alias = config.alias;
+  , alias = config.alias
+  , compile = require('./compile');
 
 command.help = function(){
   console.log([
@@ -115,6 +116,7 @@ function footer() {
 
 
 function appendToBuffer(data) {
+  data = compile.sourcemap(false).parse(data,'app.js',rootPath); 
   fs.appendFile($path.join(dist,'app.js'),data,function(err){
     if(err) throw err;
   });
