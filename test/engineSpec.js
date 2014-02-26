@@ -41,4 +41,13 @@ describe('The template enginee render feature ',function(){
     $scan(element);
     expect("hello scope").toBe(element.textContent);
   });
+
+  it("the \\n in expression",function(){
+    define('testCtrl',function(exports,require,module){
+      exports.user = { name:'x' };
+    });
+    var element = $compile("<div scope='testCtrl'>{{ user.name }}</div>");
+    $scan(element);
+    expect("x").toBe(element.textContent);
+  });
 });
