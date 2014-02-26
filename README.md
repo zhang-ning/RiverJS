@@ -4,6 +4,40 @@
 ###Description
 RiverJS is a simple framework fellow part of CMD standard and contains a extendable two-way binding template-enginee.
 
+###Build tool
+```
+npm install -g riverjs
+```
+
+###New way wrap module
+
+```
+touch app/hello.js
+```
+
+```javascript
+\\@sourcefile: app/hello.js
+exports.to = function(who) {
+  console.log('hello ' + who);
+}
+
+```
+
+```
+riverjs build app
+```
+
+
+```html
+\\index.html
+<script>
+main(function(exports,require,module){
+  var hello = require('app.hello');
+  hello.to('world');
+});
+</script>
+```
+
 ###Tutorials
 [RiverJS](http://besideriver.com/RiverJS)
 

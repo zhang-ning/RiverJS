@@ -1,6 +1,6 @@
 {
   "name": "riverjs",
-  "version": "1.0.6",
+  "version": "1.0.72",
   "description": "a simple font-end framework with extendable two-way binding",
   "main": "Gruntfile.js",
   "directories": {
@@ -8,6 +8,9 @@
   },
   "dependencies": {
     "jsdom": "~0.5.7"
+  },
+  "bin":{
+    "riverjs":"bin/river.js"
   },
   "devDependencies": {
     "uglify-js": "~2.4.0",
