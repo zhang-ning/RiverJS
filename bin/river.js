@@ -3,6 +3,9 @@
 var command = {}
   , fs = require('fs')
   , $path = require('path')
+  , es = require('riverjs-event-sequence')
+  , serial = es.serial
+  , parallel = es.parallel
   , package = require('../package')
   , exclude = /node_modules/
   , targetfile = /\.js\s*$/
@@ -39,6 +42,7 @@ if(typeof bin === 'function'){
   command.help();
 }
 
+var pns = [];
 
 
 function begin(path) {
@@ -47,34 +51,47 @@ function begin(path) {
   rootPath = path;
   clean(dist);
   buildFile(dist);
-  readPath(path);
-}
-
-function readPath(path){
-  fs.stat(path,function(err,value){
-    if(err) throw err;
-    if(value.isFile()) readFile(path);
-    if(value.isDirectory()) readDirectory(path);
+  readPath(path).on('end',function(){
+    console.log(pns);
+    //compile.minify(buffer);
   });
 }
 
+function readPath(path){
+  var me = this;
+  var queue = me instanceof parallel ? me : new parallel();
+  fs.stat(path,function(err,value){
+    if(err) throw err;
+    if(value.isFile()) queue.push(readFile,path);
+    if(value.isDirectory()) queue.push(readDirectory,path);
+    if(me instanceof parallel) queue.update();
+  });
+  return queue;
+}
+
+
 function readFile(path){
+  var me = this;
   if(!targetfile.test(path)) return;
   fs.readFile(path,'utf8',function(err,value){
     var namespace = path.replace(/^\.\/|\.js$/g,'').replace(/\//g,'.');
     var data = header(namespace)  + '\n' + value + '\n' + footer() + '\n';
+    pns.push(path);
     appendToBuffer(data);
+    me.update();
   });
 }
 
 function readDirectory(path){
   if(exclude.test(path)) return;
+  var me = this;
   fs.readdir(path,function(err,value){
     if(err) throw err;
     for (var i = 0, len = value.length; i < len; i++) {
       var childpath = path + '/' + value[i];
-      readPath(childpath);
+      me.push(readPath,childpath);
     }
+    me.update();
   });
 }
 
@@ -113,7 +130,6 @@ function header(ns) {
 function footer() {
   return '});';
 }
-
 
 function appendToBuffer(data) {
   data = compile.sourcemap(false).parse(data,'app.js',rootPath); 

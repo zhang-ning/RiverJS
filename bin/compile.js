@@ -31,6 +31,13 @@ hasNot.parse = function(code,distname,root){
   });
   var ast = $.parse(code);
   ast.print(stream);
-  console.log(sourcemap.toString());
   return stream.toString() + '\n';
+}
+
+exports.minify = function(source,dist){
+  var result = $.minify(source,{
+    OutSourceMap: "app.map"
+  })
+  console.log(result.code);
+  console.log(result.map);
 }

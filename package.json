@@ -7,10 +7,11 @@
     "test": "test"
   },
   "dependencies": {
-    "uglify-js":"*"
+    "uglify-js": "*",
+    "riverjs-event-sequence": "0.0.6"
   },
-  "bin":{
-    "riverjs":"bin/river.js"
+  "bin": {
+    "riverjs": "bin/river.js"
   },
   "devDependencies": {
     "uglify-js": "~2.4.0",
