@@ -3,13 +3,14 @@
  */
 var $      = require('uglify-js')
   , has    = {}
-  , hasNot = {};
+  , hasNot = {}
+  , fs = require('fs');
 
 exports.sourcemap = function(need){
   return need ? has : hasNot
 }
 
-has.parse = function(code){
+has.parse = function(code,distname,root,path,ast){
   /*
   var ast = $.parse(code);
   var compressor = $.Compressor();
@@ -20,24 +21,29 @@ has.parse = function(code){
   return $.minify(code,{fromString: true}).code;
 }
 
-hasNot.parse = function(code,distname,root){
+hasNot.parse = function(code,path,map){
+  var distname = 'app.js';
   var sourcemap = $.SourceMap({
     file:distname,
-    root:root
+    root:'..'
   });
   var stream = $.OutputStream({ 
-    beautify:true,
+    //beautify:true,
+    //indent_level:2,
     source_map : sourcemap
   });
-  var ast = $.parse(code);
-  ast.print(stream);
+  map.ast = $.parse(code,{filename:path,toplevel:map.ast});
+  var compressor = $.Compressor();
+  map.ast.figure_out_scope();
+  map.ast = map.ast.transform(compressor);
+  map.ast.print(stream);
+  map.value = sourcemap.toString();
   return stream.toString() + '\n';
 }
 
-exports.minify = function(source,dist){
+exports.minify = function(source,file,ast){
   var result = $.minify(source,{
-    OutSourceMap: "app.map"
-  })
-  console.log(result.code);
-  console.log(result.map);
+    fromString: true,
+    outSourceMap: "app.map"
+  });
 }

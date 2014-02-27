@@ -13,7 +13,8 @@ var command = {}
   , config = require('./config').get()
   , dist = config.dist
   , alias = config.alias
-  , compile = require('./compile');
+  , compile = require('./compile')
+  , map = {};
 
 command.help = function(){
   console.log([
@@ -42,7 +43,6 @@ if(typeof bin === 'function'){
   command.help();
 }
 
-var pns = [];
 
 
 function begin(path) {
@@ -52,8 +52,10 @@ function begin(path) {
   clean(dist);
   buildFile(dist);
   readPath(path).on('end',function(){
-    console.log(pns);
-    //compile.minify(buffer);
+    fs.writeFile($path.join(dist,'app.map'),map.value);
+    var time = '//powered by riverjs , ' + (new Date()) + '\n'
+    var str = "//@ sourceMappingURL=app.map";
+    fs.writeFile($path.join(dist,'app.js'),time + map.data + str);
   });
 }
 
@@ -64,7 +66,7 @@ function readPath(path){
     if(err) throw err;
     if(value.isFile()) queue.push(readFile,path);
     if(value.isDirectory()) queue.push(readDirectory,path);
-    if(me instanceof parallel) queue.update();
+    if(me instanceof parallel) queue.end();
   });
   return queue;
 }
@@ -76,9 +78,8 @@ function readFile(path){
   fs.readFile(path,'utf8',function(err,value){
     var namespace = path.replace(/^\.\/|\.js$/g,'').replace(/\//g,'.');
     var data = header(namespace)  + '\n' + value + '\n' + footer() + '\n';
-    pns.push(path);
-    appendToBuffer(data);
-    me.update();
+    appendToBuffer(data,path);
+    me.end();
   });
 }
 
@@ -91,7 +92,7 @@ function readDirectory(path){
       var childpath = path + '/' + value[i];
       me.push(readPath,childpath);
     }
-    me.update();
+    me.end();
   });
 }
 
@@ -131,11 +132,8 @@ function footer() {
   return '});';
 }
 
-function appendToBuffer(data) {
-  data = compile.sourcemap(false).parse(data,'app.js',rootPath); 
-  fs.appendFile($path.join(dist,'app.js'),data,function(err){
-    if(err) throw err;
-  });
+function appendToBuffer(data,path) {
+  map.data = compile.sourcemap(false).parse(data,path,map); 
 }
 
 /**

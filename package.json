@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "uglify-js": "*",
-    "riverjs-event-sequence": "0.0.6"
+    "riverjs-event-sequence": "0.0.7"
   },
   "bin": {
     "riverjs": "bin/river.js"
