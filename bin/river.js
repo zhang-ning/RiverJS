@@ -53,9 +53,9 @@ function begin(path) {
   buildFile(dist);
   readPath(path).on('end',function(){
     fs.writeFile($path.join(dist,'app.map'),map.value);
-    var time = '//powered by riverjs , ' + (new Date()) + '\n'
+    var time = '\n//powered by riverjs , ' + (new Date()) 
     var str = "//@ sourceMappingURL=app.map";
-    fs.writeFile($path.join(dist,'app.js'),time + map.data + str);
+    fs.writeFile($path.join(dist,'app.js'),map.data + str + time);
   });
 }
 
