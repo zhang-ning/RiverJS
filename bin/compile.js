@@ -1,49 +1,42 @@
 /*
  * module dependence
  */
-var $      = require('uglify-js')
-  , has    = {}
-  , hasNot = {}
+var $  = require('uglify-js')
   , fs = require('fs');
 
-exports.sourcemap = function(need){
-  return need ? has : hasNot
-}
-
-has.parse = function(code,distname,root,path,ast){
-  /*
-  var ast = $.parse(code);
-  var compressor = $.Compressor();
-  ast.figure_out_scope();
-  ast = ast.transform(compressor);
-  return  ast.print_to_string();
-  */
-  return $.minify(code,{fromString: true}).code;
-}
-
-hasNot.parse = function(code,path,map){
-  var distname = 'app.js';
+exports.minify = function(code,path,map){
+  map.ast = $.parse(code,{filename:path,toplevel:map.ast});
   var sourcemap = $.SourceMap({
-    file:distname,
+    file:'app.js',
     root:'..'
   });
   var stream = $.OutputStream({ 
-    //beautify:true,
-    //indent_level:2,
     source_map : sourcemap
   });
-  map.ast = $.parse(code,{filename:path,toplevel:map.ast});
-  var compressor = $.Compressor();
-  map.ast.figure_out_scope();
-  map.ast = map.ast.transform(compressor);
   map.ast.print(stream);
-  map.value = sourcemap.toString();
-  return stream.toString() + '\n';
+
+  var compressor = $.Compressor({warnings:false});
+  map.ast.figure_out_scope();
+  map.ast.compute_char_frequency();
+  map.ast.mangle_names();
+  map.ast = map.ast.transform(compressor);
+  map.value = sourcemap + "";
+  map.data = stream + "";
 }
 
-exports.minify = function(source,file,ast){
-  var result = $.minify(source,{
-    fromString: true,
-    outSourceMap: "app.map"
+exports.parse = function(code,path,map){
+  map.ast = $.parse(code,{filename:path,toplevel:map.ast});
+  var sourcemap = $.SourceMap({
+    file:'app.js',
+    root:'..'
   });
+  var stream = $.OutputStream({ 
+    beautify:true,
+    indent_level:2,
+    source_map : sourcemap
+  });
+  map.ast.print(stream);
+
+  map.value = sourcemap + "";
+  map.data = stream + "";
 }

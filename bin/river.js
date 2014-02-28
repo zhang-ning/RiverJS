@@ -7,7 +7,7 @@ var command = {}
   , serial = es.serial
   , parallel = es.parallel
   , package = require('../package')
-  , exclude = /node_modules/
+  , exclude = /node_modules|build/
   , targetfile = /\.js\s*$/
   , rootPath
   , config = require('./config').get()
@@ -51,11 +51,15 @@ function begin(path) {
   rootPath = path;
   clean(dist);
   buildFile(dist);
+
+  //readPathSync(path);
   readPath(path).on('end',function(){
-    fs.writeFile($path.join(dist,'app.map'),map.value);
-    var time = '\n//powered by riverjs , ' + (new Date()) 
-    var str = "//@ sourceMappingURL=app.map";
-    fs.writeFile($path.join(dist,'app.js'),map.data + str + time);
+    var str="";
+    if(config.sourcemap){ 
+      fs.writeFile($path.join(dist,'app.map'),map.value); 
+      str = "//# sourceMappingURL=app.map";
+    }
+    fs.writeFile($path.join(dist,'app.js'),map.data + str);
   });
 }
 
@@ -72,24 +76,28 @@ function readPath(path){
 }
 
 
+
 function readFile(path){
   var me = this;
-  if(!targetfile.test(path)) return;
+  if(!targetfile.test(path)){ me.end(); return; }
   fs.readFile(path,'utf8',function(err,value){
     var namespace = path.replace(/^\.\/|\.js$/g,'').replace(/\//g,'.');
-    var data = header(namespace)  + '\n' + value + '\n' + footer() + '\n';
-    appendToBuffer(data,path);
+    var code = header(namespace)  + '\n' + value + '\n' + footer() + '\n';
+    generateSourceMap(code,path);
     me.end();
   });
 }
 
 function readDirectory(path){
-  if(exclude.test(path)) return;
   var me = this;
+  if(exclude.test(path)) {
+    me.end();
+    return;
+  }
   fs.readdir(path,function(err,value){
     if(err) throw err;
     for (var i = 0, len = value.length; i < len; i++) {
-      var childpath = path + '/' + value[i];
+      var childpath = $path.join(path,value[i]);
       me.push(readPath,childpath);
     }
     me.end();
@@ -132,8 +140,12 @@ function footer() {
   return '});';
 }
 
-function appendToBuffer(data,path) {
-  map.data = compile.sourcemap(false).parse(data,path,map); 
+function generateSourceMap(code,path) {
+  if(config.minify){
+    compile.minify(code,path,map); 
+  }else{
+    compile.parse(code,path,map); 
+  }
 }
 
 /**
@@ -150,5 +162,30 @@ function copyDist() {
     fs.readFile($path.join(__dirname,'../dist',name),function(err,buf){
       fs.writeFile($path.join(dist,name),buf);
     });
+  }
+}
+
+
+function readPathSync(path){
+  var stat = fs.statSync(path);
+  if(stat.isFile()) readFileSync(path);
+  if(stat.isDirectory()) readDirectorySync(path);
+}
+
+function readFileSync(path){
+  if(!targetfile.test(path)) return;
+  var content = fs.readFileSync(path,'utf8');
+  var namespace = path.replace(/^\.\/|\.js$/g,'').replace(/\//g,'.');
+  var code = header(namespace)  + '\n' + content + '\n' + footer() + '\n';
+  generateSourceMap(code,path);
+}
+
+function readDirectorySync(path){
+  if(exclude.test(path)) return;
+  var me = this;
+  var value = fs.readdirSync(path);
+  for (var i = 0, len = value.length; i < len; i++) {
+    var childpath = path + '/' + value[i];
+    readPathSync(childpath);
   }
 }
