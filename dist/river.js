@@ -556,20 +556,20 @@ define('river.core.tools', function() {
 });
 define('river.grammer.jbind',function(){
 
-  function jbind (str){
-    var scope = this.scope;
-    var oldValue = this.node.value = scope[str];
+  function jbind (str,scope,element,repeatscope){
+    scope = repeatscope || scope;
+    var oldValue = element.value = scope[str];
 
     var interval;
 
-    this.node.onfocus = function(){
+    element.onfocus = function(){
       var ele = this;
       interval = setInterval(function(){
         watch(ele.value);
       },30);
     };
 
-    this.node.onblur = function(){
+    element.onblur = function(){
       clearInterval(interval);
     };
 
@@ -647,8 +647,8 @@ define('river.grammer.jon', function() {
   function on (str,scope,element,repeatscope) {
     var expression = str.replace(/\(.*\)/,'');
 
-    var type = expression.replace(/\s*\|.*/,'');
-    var key  = expression.replace(/.*\|\s*/,'');
+    var type = expression.replace(/\s*[\||:].*/,'');
+    var key  = expression.replace(/.*[\||:]\s*/,'');
     var fn = scope[key];
 
     var param = /\((.*)\)/;
@@ -663,7 +663,7 @@ define('river.grammer.jon', function() {
 
     var argsdata = [];
     for (var i = 0, len = args.length; i < len; i++) {
-      var item = scope[args[i]] ? scope[args[i]] : args[i];
+      var item = scope[args[i]] ? scope[args[i]] : '';//args[i];
       argsdata.push(item);
     }
 
@@ -808,11 +808,15 @@ define('river.grammer.scope', function() {
   var tools = me.need('river.core.tools');
 
   function _scope(str) {
-    //this.node.removeAttribute('scope');
+    this.node.removeAttribute('scope');
     var source = me.need(str);
     if (tools.isObject(source)) {
+      var mod = new model(str, this.eom);
       //source.watch(this.eom);
-      this.scope = source;
+      for(var x in source){
+        mod[x] = source[x];
+      }
+      this.scope = mod || source;
     } else if (tools.isFunction(source)) {
       var m = new model(str, this.eom);
       this.scope = m;
