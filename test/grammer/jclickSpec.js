@@ -103,5 +103,4 @@ main(function(){
       expect(foo.result2).toEqual("world");
     });
   });
-
 });
