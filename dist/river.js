@@ -274,13 +274,6 @@ define('river.core.model', function() { //@sourceURL=../lib/core/model.js
           ele.element.nodeValue = ele.expression.replace(/{{.*}}/, value);
           //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
         });
-      }else if(eom && !eom[key]){
-        each(eom,function(d,i){
-          loop(d, function(ele, i) {
-            ele.element.nodeValue = ele.expression.replace(/{{.*}}/, value);
-            //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
-          });
-        })
       }
     } else if (isArray(value)) {
       oldvalue = oldvalue ? oldvalue : [];
