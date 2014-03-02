@@ -272,6 +272,9 @@ define('river.core.model', function() { //@sourceURL=../lib/core/model.js
       if(eom && eom[key]){
         loop(eom[key], function(ele, i) {
           ele.element.nodeValue = ele.expression.replace(/{{.*}}/, value);
+          if(ele.element.nodeName == 'INPUT'){
+            ele.element.value = ele.expression.replace(/{{.*}}/, value);
+          }
           //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
         });
       }
@@ -545,6 +548,11 @@ define('river.grammer.jbind',function(){
   function jbind (str,scope,element,repeatscope){
     scope = repeatscope || scope;
     var oldValue = element.value = scope[str] || '';
+    this.eom[str] = this.eom[str] || [];
+    this.eom[str].push({
+      element:element,
+      expression:"{{"+str+"}}"
+    });
 
     var interval;
 
