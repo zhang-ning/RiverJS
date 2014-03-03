@@ -321,7 +321,7 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
         var _n = node.cloneNode(true);
         var m = {};
         var grammars = [];
-        trans(_r, _n, d, key, m,grammars);
+        trans(_r, _n, d, key, m,grammars,true);
         m.grammars = grammars;
         eom.push(m);
         frg.appendChild(_n);
@@ -736,7 +736,7 @@ define("river.grammer.repeat", function() {
   var context = {};
 
 
-  function trans(reg, doc, scope, key, eom,grammars) {
+  function trans(reg, doc, scope, key, eom,grammars,stop) {
     var hasRepeat = false;
     if (doc.attributes && doc.attributes.length) {
       Array.prototype.forEach.call(doc.attributes, function(attr) {
@@ -774,7 +774,7 @@ define("river.grammer.repeat", function() {
               rootScope:rootScope
             });
             //todo : scope should inherit from rootScope
-            grammer.call(context,str,rootScope,context.node,context.scope);
+            if(!stop)grammer.call(context,str,rootScope,context.node,context.scope);
           }
         }
       });
@@ -796,7 +796,7 @@ define("river.grammer.repeat", function() {
     }
     if (doc.childNodes && doc.childNodes.length && !hasRepeat) {
       Array.prototype.forEach.call(doc.childNodes, function(child) {
-        trans(reg, child, scope, key, eom,grammars);
+        trans(reg, child, scope, key, eom,grammars,stop);
       });
     }
   }
