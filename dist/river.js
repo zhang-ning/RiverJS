@@ -253,7 +253,7 @@ define('river.core.Date', function() {
     getDateByCity: getDateByCity
   };
 });
-define('river.core.model', function() { //@sourceURL=../lib/core/model.js
+define('river.core.model', function(exports,require,module) { //@sourceURL=../lib/core/model.js
 
   var tools = this.need('river.core.tools');
 
@@ -330,11 +330,20 @@ define('river.core.model', function() { //@sourceURL=../lib/core/model.js
     }
   }
 
+  function loadGrammar(key) {
+    return require('river.grammer.' + key);
+  }
+
   function updateGrammar(eom,data){
     var grammars = eom.grammars;
     if(!grammars) return;
     grammars.forEach(function(d,i){
-      d.grammar.call(d.context,d.str,d.rootScope,d.context.node,data);
+      var context = {};
+      context.node = d.node;
+      context.scope = data;//scope; waiting for refactory
+      context.reg = d.reg;
+      context.eom = d.eom;
+      loadGrammar(d.grammar).call(context,d.str,d.rootScope,d.node,data);
     });
   }
 
@@ -757,8 +766,10 @@ define("river.grammer.repeat", function() {
             //context.scope = rootScope;
             var str = attr.nodeValue.replace(reg, '');
             grammars.push({
-              grammar : grammer,
-              context : context,
+              grammar : attr.nodeName,
+              eom:eom,
+              reg:reg,
+              node:doc,
               str : str,
               rootScope:rootScope
             });
