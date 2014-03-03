@@ -41,6 +41,10 @@ describe("test code.tool", function() {
     });
 
     it('diff the value not the reference', function() {
+      expect(tool.expect(undefined).toEqual(1)).toBe(false);
+    });
+
+    it('diff the value not the reference', function() {
       expect(data).toEqual(source);
       expect(data).not.toBe(source);
       expect(tool.expect(source).toEqual(data)).toBe(true);
