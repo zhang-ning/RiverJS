@@ -293,7 +293,8 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
       }else if(removeItems){
         Array.prototype.splice.call(eom[key],0,len);
         for(var k= 0;k<len;k++){
-          children[k].parentNode.removeChild(children[k]);
+          var child = eom[key].repeatContainer.children[0];
+          eom[key].repeatContainer.removeChild(child);
         }
       }
       loop(value, function(item, index) {

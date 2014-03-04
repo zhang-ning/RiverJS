@@ -23,14 +23,21 @@ exports.add = function (event) {
 exports.remove = function (todo) {
   var index = todos.indexOf(todo);
   todos.splice(index,1);
-  exports.activenum--;
+
+  if(todo.status == 'active'){
+    exports.activenum--;
+  }else{
+    exports.completednum--;
+  }
 }
 
 exports.removeCompleted = function(){
   exports.completednum = 0;
-  exports.todos = todos.filter(function(d,i){
-    if(d.status == 'active'){
+  console.log(exports.todos);
+  todos = exports.todos = todos.filter(function(d,i){
+    if(d.status != 'completed'){
       return true;
     }
   });
+  console.log(exports.todos);
 }
