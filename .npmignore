@@ -2,6 +2,7 @@ node_modules
 _site
 doc
 example
+examples
 resume
 test
 *.md

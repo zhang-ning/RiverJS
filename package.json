@@ -55,7 +55,7 @@
     "extendable"
   ],
   "author": "Jonathan Zhang",
-  "license": "BSD",
+  "license": "MIT",
   "readmeFilename": "README.md",
   "gitHead": "bf55916ce81ece931a40a0ce26a8bcc34821bf30"
 }
