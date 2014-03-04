@@ -1,15 +1,13 @@
 exports = module.exports = function(str,scope,element){
 
   var eom = this.eom;
-
-
   window.onhashchange = function(){
     navigate();
   }
 
   function navigate(){
     var menu = window.location.hash.replace(/\#\//,'') || 'all';
-    var domlist = element.querySelectorAll('a');
+    var domlist = element.querySelectorAll('#filters a');
     clear(domlist);
     logic[menu].call(domlist,scope.todos,eom.todos);
   }

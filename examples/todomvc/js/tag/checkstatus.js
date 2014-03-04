@@ -2,14 +2,33 @@ exports = module.exports = function(str,scope,element,repeatscope){
 
   var cbx = element.querySelector('[type=checkbox]');
 
-  if(repeatscope.status === 'active'){
-    element.className =  ''; 
-    cbx.checked = false;
-  }else{
-    element.className =  'completed'; 
-    cbx.checked = true;
+  var logic = {
+    all:all,
+    active:active,
+    completed:completed
+  };
+  function all(status){
+    if(status === 'active'){
+      element.className =  ''; 
+      cbx.checked = false;
+    }else{
+      element.className =  'completed'; 
+      cbx.checked = true;
+    }
+  }
+  function active(status){ 
+    all(status);
+    this.style.display = status == 'active' ? 'block' : 'none'; 
+  }
+  function completed(status){
+    all(status);
+    this.style.display = status == 'completed' ? 'block' : 'none'; 
   }
 
+  function route(){
+    var menu = window.location.hash.replace(/\#\//,'') || 'all';
+    logic[menu].call(element,repeatscope.status);
+  }
 
   cbx.onclick = function(event){
     if(repeatscope.status == 'active'){
@@ -23,24 +42,11 @@ exports = module.exports = function(str,scope,element,repeatscope){
       scope.activenum++;
       scope.completednum--;
     }
-    var menu = window.location.hash.replace(/\#\//,'') || 'all';
-    logic[menu].call(element);
+    route();
     scope.apply();
   }
 
-  var logic = {
-    all:all,
-    active:active,
-    completed:completed
-  };
+  route();
 
-  function all(){}
 
-  function active(){
-    this.style.display = 'none';
-  }
-
-  function completed(){
-    this.style.display = 'none';
-  }
 }

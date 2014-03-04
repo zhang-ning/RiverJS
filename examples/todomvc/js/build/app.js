@@ -5,10 +5,24 @@ define("app", function(exports, require, module) {
 });
 
 define("controller.todo", function(exports, require, module) {
-  var model = require("model.todo"), todos = exports.todos = model.get();
+  var model = require("model.local"), todos = exports.todos = model.get();
   exports.newtodo = "";
-  exports.activenum = 0;
-  exports.completednum = 0;
+  function calStatus() {
+    exports.activenum = 0;
+    exports.completednum = 0;
+    for (var i = 0, len = todos.length; i < len; i++) {
+      if (todos[i].status == "active") {
+        exports.activenum++;
+      } else {
+        exports.completednum++;
+      }
+    }
+  }
+  function save() {
+    calStatus();
+    model.save(todos);
+  }
+  calStatus();
   exports.add = function(event) {
     if (event.keyCode == 13 && exports.newtodo) {
       todos.unshift({
@@ -16,49 +30,63 @@ define("controller.todo", function(exports, require, module) {
         status: "active"
       });
       exports.newtodo = "";
-      exports.activenum++;
+      save();
     }
   };
   exports.remove = function(todo) {
     var index = todos.indexOf(todo);
     todos.splice(index, 1);
-    if (todo.status == "active") {
-      exports.activenum--;
-    } else {
-      exports.completednum--;
-    }
+    save();
+  };
+  exports.toggleall = function() {
+    todos.forEach(function(d, i) {
+      if (exports.completednum >= 0 && exports.completednum < todos.length) {
+        d.status = "completed";
+      } else {
+        d.status = "active";
+      }
+    });
+    save();
   };
   exports.removeCompleted = function() {
     exports.completednum = 0;
-    console.log(exports.todos);
     todos = exports.todos = todos.filter(function(d, i) {
       if (d.status != "completed") {
         return true;
       }
     });
-    console.log(exports.todos);
-  };
-});
-
-define("model.todo", function(exports, require, module) {
-  var STORAGE_ID = "todos-riverjs";
-  exports.get = function() {
-    return JSON.parse(localStorage.getItem(STORAGE_ID) || "[]");
-  };
-  exports.put = function() {
-    localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
+    save();
   };
 });
 
 define("river.grammer.checkstatus", function(exports, require, module) {
   exports = module.exports = function(str, scope, element, repeatscope) {
     var cbx = element.querySelector("[type=checkbox]");
-    if (repeatscope.status === "active") {
-      element.className = "";
-      cbx.checked = false;
-    } else {
-      element.className = "completed";
-      cbx.checked = true;
+    var logic = {
+      all: all,
+      active: active,
+      completed: completed
+    };
+    function all(status) {
+      if (status === "active") {
+        element.className = "";
+        cbx.checked = false;
+      } else {
+        element.className = "completed";
+        cbx.checked = true;
+      }
+    }
+    function active(status) {
+      all(status);
+      this.style.display = status == "active" ? "block" : "none";
+    }
+    function completed(status) {
+      all(status);
+      this.style.display = status == "completed" ? "block" : "none";
+    }
+    function route() {
+      var menu = window.location.hash.replace(/\#\//, "") || "all";
+      logic[menu].call(element, repeatscope.status);
     }
     cbx.onclick = function(event) {
       if (repeatscope.status == "active") {
@@ -72,22 +100,10 @@ define("river.grammer.checkstatus", function(exports, require, module) {
         scope.activenum++;
         scope.completednum--;
       }
-      var menu = window.location.hash.replace(/\#\//, "") || "all";
-      logic[menu].call(element);
+      route();
       scope.apply();
     };
-    var logic = {
-      all: all,
-      active: active,
-      completed: completed
-    };
-    function all() {}
-    function active() {
-      this.style.display = "none";
-    }
-    function completed() {
-      this.style.display = "none";
-    }
+    route();
   };
 });
 
@@ -99,7 +115,7 @@ define("river.grammer.filter", function(exports, require, module) {
     };
     function navigate() {
       var menu = window.location.hash.replace(/\#\//, "") || "all";
-      var domlist = element.querySelectorAll("a");
+      var domlist = element.querySelectorAll("#filters a");
       clear(domlist);
       logic[menu].call(domlist, scope.todos, eom.todos);
     }
@@ -136,5 +152,15 @@ define("river.grammer.filter", function(exports, require, module) {
       }
     };
     navigate();
+  };
+});
+
+define("model.local", function(exports, require, module) {
+  var STORAGE_ID = "todos-riverjs";
+  exports.get = function() {
+    return JSON.parse(localStorage.getItem(STORAGE_ID) || "[]");
+  };
+  exports.save = function(todos) {
+    localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
   };
 });
