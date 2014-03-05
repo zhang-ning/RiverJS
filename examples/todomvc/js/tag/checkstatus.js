@@ -45,8 +45,14 @@ exports = module.exports = function(str,scope,element,repeatscope){
     route();
     scope.apply();
   }
+  element.ondblclick = function(e){
+    this.className = 'editing';
+  }
+
+  var cn = element.className;
+  element.querySelector('.edit').addEventListener('blur',function(){
+    element.className = cn;
+  });
 
   route();
-
-
 }
