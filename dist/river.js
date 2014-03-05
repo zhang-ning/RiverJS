@@ -280,27 +280,7 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
       }
     } else if (isArray(value)) {
       oldvalue = oldvalue ? oldvalue : [];
-      var children = eom[key].repeatContainer.children;
-      var length = value.length - children.length
-        , len = Math.abs(length)
-        , addItems = length > 0
-        , removeItems = length < 0;
-      if(addItems){
-        var vv = value.slice(value.length-len,value.length);
-        for(var i = 0;i<len;i++){
-          buildNewEom(eom[key],vv);
-        }
-      }else if(removeItems){
-        Array.prototype.splice.call(eom[key],0,len);
-        for(var k= 0;k<len;k++){
-          var child = eom[key].repeatContainer.children[0];
-          eom[key].repeatContainer.removeChild(child);
-        }
-      }
-      loop(value, function(item, index) {
-        updateGrammar(eom[key][index],item);
-        update.call(scope,item, index, eom[key][index],oldvalue[index]);
-      });
+      diff(value,oldvalue,eom[key]);
     } else if (isObject(value)) {
       oldvalue = oldvalue ? oldvalue : {};
       each(value, function(item, index) {
@@ -309,45 +289,56 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
     }
   }
 
+  function diff(value,oldvalue,eom){
+    var len = value.length >= oldvalue.length ? value.length : oldvalue.length;
+    var expect = tools.expect;
+    var container = eom.repeatContainer;
+    var cnt = 0;
+    for (var i = 0 ; i < len; i++) {
+      var newvalue = value[i];
+      var exists = typeof newvalue !== 'undefined';
+      if(exists && !expect(newvalue).toEqual(oldvalue[i])){
+        var neweom = getNewEom(eom,newvalue);
+        var refnode = container.children[i];
+        oldvalue.splice(i,1,newvalue); // sync oldvalue
+        eom.splice(i,1,neweom); //sync eom
+        container.insertBefore(neweom.repeat,refnode); //sync dom
+        if(refnode)container.removeChild(refnode);
+      }else if(!exists){
+        oldvalue.splice(i-cnt,1);
+        eom.splice(i-cnt,1);
+        container.removeChild(container.children[i-cnt]);
+        cnt++;
+      }
+    }
+  }
 
-  function buildNewEom(eom,data) {
+  function getIndex(v,srcarray){
+    var result = -1;
+    for (var i = 0, len = srcarray.length; i < len; i++) {
+      if(tools.expect(v).toEqual(srcarray[i])){
+        result = i;
+        break;
+      }
+    }
+    return result;
+  }
+
+  function getNewEom(eom,d){
     var trans = eom.trans;
     var node = eom.repeatNode;
     var _r = eom.reg;
     var key = eom.key;
-    var parentNode = eom.repeatContainer;
-    var frg = document.createDocumentFragment();
-    if (data && data.length) {
-      data.forEach(function(d,i) {
-        var _n = node.cloneNode(true);
-        var m = {};
-        var grammars = [];
-        trans(_r, _n, d, key, m,grammars,true);
-        m.grammars = grammars;
-        m.repeat = _n;
-        eom.push(m);
-        frg.appendChild(_n);
-      });
-      parentNode.appendChild(frg);
-    }
+  //  var parentNode = eom.repeatContainer;
+    var _n = node.cloneNode(true);
+    var m = {};
+    var grammars = [];
+    trans(_r, _n, d, key, m,grammars);
+    m.grammars = grammars;
+    m.repeat = _n;
+    return m;
   }
 
-  function loadGrammar(key) {
-    return require('river.grammer.' + key);
-  }
-
-  function updateGrammar(eom,data){
-    var grammars = eom.grammars;
-    if(!grammars) return;
-    grammars.forEach(function(d,i){
-      var context = {};
-      context.node = d.node;
-      context.scope = data;//scope; waiting for refactory
-      context.reg = d.reg;
-      context.eom = d.eom;
-      loadGrammar(d.grammar).call(context,d.str,d.rootScope,d.node,data);
-    });
-  }
 
   function Model(ns, eom) {
     _eoms[ns] = eom;
@@ -357,7 +348,7 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
 
   Model.prototype.apply = function() {
     var _eom = _eoms[this.$$ns]
-      , last = lasts[this.$$ns]
+      , last = this.__last__//lasts[this.$$ns]
       , scope = this;
 
     each(this, function(val, index) {
@@ -817,20 +808,23 @@ define('river.grammer.scope', function() {
     var source = me.need(str);
     if (tools.isObject(source)) {
       var mod = new model(str, this.eom);
-      //source.watch(this.eom);
+      //make source inherit from mod
       //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/proto
-      //as the __proto__ is deprecated,I have to do this
       for(var x in mod){
          source[x] = mod[x]
       }
+      source.__last__ = tools.clone(source);
       this.scope = source;
     } else if (tools.isFunction(source)) {
       var m = new model(str, this.eom);
       this.scope = m;
       source.call(m);
+      m.__last__ = tools.clone(m);
     } else {
       var guid = tools.guid();
-      this.scope = new model(guid, this.eom);
+      var mo = new model(guid, this.eom);
+      mo.__last__ = tools.clone(mo);
+      this.scope  = mo;
     }
   }
 
