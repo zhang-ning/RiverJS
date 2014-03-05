@@ -113,12 +113,13 @@ define("river.grammer.checkstatus", function(exports, require, module) {
       route();
       scope.apply();
     };
+    var me = this;
     element.ondblclick = function(e) {
       this.className = "editing";
+      element.querySelector(".edit").focus();
     };
-    var cn = element.className;
     element.querySelector(".edit").addEventListener("blur", function() {
-      element.className = cn;
+      element.className = repeatscope.status === "completed" ? "completed" : "";
     });
     route();
   };
