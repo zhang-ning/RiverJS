@@ -257,7 +257,7 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
 
   var tools = this.need('river.core.tools');
 
-  var _eoms = {}, lasts = {} , me = this;
+  var me = this;
 
   var isArray  = tools.isArray;
   var isObject = tools.isObject;
@@ -280,10 +280,13 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
       }
     } else if (isArray(value)) {
       oldvalue = oldvalue ? oldvalue : [];
-      diff(value,oldvalue,eom[key]);
-      loop(value,function(item,index){
-        update.call(scope,item,index,eom,oldvalue[index]);
-      });
+      if(value.length == oldvalue.length){
+        loop(value, function(item, index) {
+          update.call(scope,item, index, eom , oldvalue[index]);
+        });
+      }else{
+        diff(value,oldvalue,eom[key]);
+      }
     } else if (isObject(value)) {
       oldvalue = oldvalue ? oldvalue : {};
       each(value, function(item, index) {
@@ -343,15 +346,17 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
   }
 
 
-  function Model(ns, eom) {
-    _eoms[ns] = eom;
-    lasts[ns] = {};
-    this.$$ns = ns;
+  function Model(ref) {
+    if(typeof ref === 'object'){
+     for(var x in ref){
+       this[x] = ref;
+     } 
+    }
   }
 
   Model.prototype.apply = function() {
-    var _eom = _eoms[this.$$ns]
-      , last = this.__last__//lasts[this.$$ns]
+    var _eom = this.__eom__
+      , last = this.__last__
       , scope = this;
 
     each(this, function(val, index) {
@@ -370,7 +375,6 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
       me[index] = source[index];
     });
   };
-
 
   return Model;
 });
@@ -483,15 +487,17 @@ define('river.core.tools', function() {
     this._diffFlag = true;
       for(var x in source){
         var isObject = type('Object',source[x]) || type('Array',source[x]); 
+        if(!this._diffFlag){ return false}
         if(isObject && target){
           diff.call(this,target[x],source[x]);
         }else{
           if(!target){
             this._diffFlag = false;
-            return;
+            break;
           }
           if(target[x] != source[x]){
             this._diffFlag = false;
+            break;
           }
         }
       }
@@ -669,9 +675,10 @@ define('river.grammer.jon', function() {
   }
   return on;
 });
-define("river.grammer.repeat", function() {
-  var $tool = this.need('river.core.tools')
-    , $scan = this.need('river.engine').scan
+define("river.grammer.repeat", function(exports,require,module) {
+  var $tool = require('river.core.tools')
+    , $scan = require('river.engine').scan
+    , model = require('river.core.model')
     , me    = this;
 
     function loadGrammar(key) {
@@ -721,9 +728,13 @@ define("river.grammer.repeat", function() {
       data.forEach(function(d,i) {
         var _n = node.cloneNode(true);
         var m = {};
-        var grammars=[];
-        trans(_r, _n, d, key, m,grammars);
-        m.grammars = grammars;
+        /*
+        if(typeof d == 'object'){
+          d.__model__ = new model();
+          d.__eom__ =  m;
+          d.__last__ = $tool.clone(d);
+        }*/
+        trans(_r, _n, d, key, m);
         m.repeat = _n;
         eom.push(m);
         frg.appendChild(_n);
@@ -735,7 +746,7 @@ define("river.grammer.repeat", function() {
   var context = {};
 
 
-  function trans(reg, doc, scope, key, eom,grammars) {
+  function trans(reg, doc, scope, key, eom) {
     var hasRepeat = false;
     if (doc.attributes && doc.attributes.length) {
       Array.prototype.forEach.call(doc.attributes, function(attr) {
@@ -764,14 +775,7 @@ define("river.grammer.repeat", function() {
           if($tool.isFunction(grammer)){
             //context.scope = rootScope;
             var str = attr.nodeValue.replace(reg, '');
-            grammars.push({
-              grammar : attr.nodeName,
-              eom:eom,
-              reg:reg,
-              node:doc,
-              str : str,
-              rootScope:rootScope
-            });
+            context.eom = {};
             //todo : scope should inherit from rootScope
             grammer.call(context,str,rootScope,context.node,context.scope);
           }
@@ -795,7 +799,7 @@ define("river.grammer.repeat", function() {
     }
     if (doc.childNodes && doc.childNodes.length && !hasRepeat) {
       Array.prototype.forEach.call(doc.childNodes, function(child) {
-        trans(reg, child, scope, key, eom,grammars);
+        trans(reg, child, scope, key, eom);
       });
     }
   }
@@ -812,23 +816,26 @@ define('river.grammer.scope', function() {
     this.node.removeAttribute('scope');
     var source = me.need(str);
     if (tools.isObject(source)) {
-      var mod = new model(str, this.eom);
+      var mod = new model();
       //make source inherit from mod
       //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/proto
       for(var x in mod){
          source[x] = mod[x]
       }
       source.__last__ = tools.clone(source);
+      source.__eom__  = this.eom;
       this.scope = source;
     } else if (tools.isFunction(source)) {
-      var m = new model(str, this.eom);
+      var m = new model();
       this.scope = m;
       source.call(m);
       m.__last__ = tools.clone(m);
+      m.__eom__  = this.eom;
     } else {
       var guid = tools.guid();
-      var mo = new model(guid, this.eom);
+      var mo = new model();
       mo.__last__ = tools.clone(mo);
+      mo.__eom__  = this.eom;
       this.scope  = mo;
     }
   }

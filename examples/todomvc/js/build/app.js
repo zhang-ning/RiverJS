@@ -117,6 +117,8 @@ define("river.grammer.checkstatus", function(exports, require, module) {
     element.ondblclick = function(e) {
       this.className = "editing";
       element.querySelector(".edit").focus();
+      console.log(this);
+      console.log(me.eom);
     };
     element.querySelector(".edit").addEventListener("blur", function() {
       element.className = repeatscope.status === "completed" ? "completed" : "";

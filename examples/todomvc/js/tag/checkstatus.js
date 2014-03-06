@@ -50,6 +50,8 @@ exports = module.exports = function(str,scope,element,repeatscope){
   element.ondblclick = function(e){
     this.className = 'editing';
     element.querySelector('.edit').focus();
+    console.log(this);
+    console.log(me.eom);
   }
 
   element.querySelector('.edit').addEventListener('blur',function(){
