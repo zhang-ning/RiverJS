@@ -4,6 +4,16 @@ define("app", function(exports, require, module) {
   })(window);
 });
 
+define("model.local", function(exports, require, module) {
+  var STORAGE_ID = "todos-riverjs";
+  exports.get = function() {
+    return JSON.parse(localStorage.getItem(STORAGE_ID) || "[]");
+  };
+  exports.save = function(todos) {
+    localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
+  };
+});
+
 define("controller.todo", function(exports, require, module) {
   var model = require("model.local"), todos = exports.todos = model.get();
   exports.newtodo = "";
@@ -59,16 +69,6 @@ define("controller.todo", function(exports, require, module) {
   };
 });
 
-define("model.local", function(exports, require, module) {
-  var STORAGE_ID = "todos-riverjs";
-  exports.get = function() {
-    return JSON.parse(localStorage.getItem(STORAGE_ID) || "[]");
-  };
-  exports.save = function(todos) {
-    localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
-  };
-});
-
 define("river.grammer.checkstatus", function(exports, require, module) {
   exports = module.exports = function(str, scope, element, repeatscope) {
     var cbx = element.querySelector("[type=checkbox]");
@@ -81,6 +81,8 @@ define("river.grammer.checkstatus", function(exports, require, module) {
       if (status === "active") {
         element.className = "";
         cbx.checked = false;
+      } else if (status === "editing") {
+        element.className = "editing";
       } else {
         element.className = "completed";
         cbx.checked = true;
@@ -114,14 +116,16 @@ define("river.grammer.checkstatus", function(exports, require, module) {
       scope.apply();
     };
     var me = this;
+    var laststatus;
     element.ondblclick = function(e) {
       this.className = "editing";
+      laststatus = scope.status;
+      scope.status = "editing";
       element.querySelector(".edit").focus();
-      console.log(this);
-      console.log(me.eom);
     };
     element.querySelector(".edit").addEventListener("blur", function() {
-      element.className = repeatscope.status === "completed" ? "completed" : "";
+      scope.status = laststatus;
+      element.className = laststatus === "completed" ? "completed" : "";
     });
     route();
   };

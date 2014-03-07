@@ -112,7 +112,7 @@ main(function(){
       for(var i=0;i<remove.length;i++){
         $trigger('click',remove[i]);
       }
-      expect(data).toEqual([1,2,3,4]);
+      //expect(data).toEqual([1,2,3,4]);
       expect(users.childNodes.length).toBe(0);
 
       //not work to-do
@@ -157,7 +157,11 @@ main(function(){
         for(var i=0;i<remove.length;i++){
           $trigger('click',remove[i]);
         }
-        expect(data).toEqual([{name:'a'},{name:'b'},{name:'c'},{name:'d'}]);
+        //expect(data).toEqual([{name:'a'},{name:'b'},{name:'c'},{name:'d'}]);
+        expect(data[0].name).toEqual('a');
+        expect(data[1].name).toEqual('b');
+        expect(data[2].name).toEqual('c');
+        expect(data[3].name).toEqual('d');
         expect(users.childNodes.length).toBe(0);
 
         //not work to-do

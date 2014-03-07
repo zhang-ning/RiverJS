@@ -11,6 +11,8 @@ exports = module.exports = function(str,scope,element,repeatscope){
     if(status === 'active'){
       element.className =  ''; 
       cbx.checked = false;
+    }else if(status === 'editing'){
+      element.className =  'editing'; 
     }else{
       element.className =  'completed'; 
       cbx.checked = true;
@@ -47,15 +49,17 @@ exports = module.exports = function(str,scope,element,repeatscope){
   }
 
   var me = this;
+  var laststatus;
   element.ondblclick = function(e){
     this.className = 'editing';
+    laststatus = scope.status;
+    scope.status = 'editing';
     element.querySelector('.edit').focus();
-    console.log(this);
-    console.log(me.eom);
   }
 
   element.querySelector('.edit').addEventListener('blur',function(){
-    element.className = repeatscope.status === 'completed' ? 'completed' : '';
+    scope.status = laststatus;
+    element.className = laststatus === 'completed' ? 'completed' : '';
   });
 
   route();

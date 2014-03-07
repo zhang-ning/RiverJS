@@ -64,7 +64,9 @@ describe("test the basic crud functionality", function() {
     it('remove todo', function() {
       var input = dom.querySelector('#new');
       var span = dom.querySelectorAll('#todos .remove')[0];
+      expect(dom.querySelectorAll('#todos .desc').length).toBe(6);
       $trigger('click',span);
+      expect(dom.querySelectorAll('#todos .desc').length).toBe(5);
       expect(dom.querySelectorAll('#todos .desc')[2].textContent).toBe('todo 3');
     });
 
