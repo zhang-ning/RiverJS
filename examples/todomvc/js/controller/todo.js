@@ -43,6 +43,11 @@ exports.remove = function (todo) {
   save();
 }
 
+exports.edit = function(event,todo){
+  todo.status = 'editing';
+}
+
+
 exports.toggleall = function(){
   todos.forEach(function(d,i){
     if(exports.completednum >= 0 && exports.completednum < todos.length){

@@ -4,16 +4,6 @@ define("app", function(exports, require, module) {
   })(window);
 });
 
-define("model.local", function(exports, require, module) {
-  var STORAGE_ID = "todos-riverjs";
-  exports.get = function() {
-    return JSON.parse(localStorage.getItem(STORAGE_ID) || "[]");
-  };
-  exports.save = function(todos) {
-    localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
-  };
-});
-
 define("controller.todo", function(exports, require, module) {
   var model = require("model.local"), todos = exports.todos = model.get();
   exports.newtodo = "";
@@ -48,6 +38,9 @@ define("controller.todo", function(exports, require, module) {
     todos.splice(index, 1);
     save();
   };
+  exports.edit = function(event, todo) {
+    todo.status = "editing";
+  };
   exports.toggleall = function() {
     todos.forEach(function(d, i) {
       if (exports.completednum >= 0 && exports.completednum < todos.length) {
@@ -69,112 +62,43 @@ define("controller.todo", function(exports, require, module) {
   };
 });
 
-define("river.grammer.checkstatus", function(exports, require, module) {
-  exports = module.exports = function(str, scope, element, repeatscope) {
-    var cbx = element.querySelector("[type=checkbox]");
-    var logic = {
-      all: all,
-      active: active,
-      completed: completed
-    };
-    function all(status) {
-      if (status === "active") {
-        element.className = "";
-        cbx.checked = false;
-      } else if (status === "editing") {
-        element.className = "editing";
-      } else {
-        element.className = "completed";
-        cbx.checked = true;
-      }
-    }
-    function active(status) {
-      all(status);
-      this.style.display = status == "active" ? "block" : "none";
-    }
-    function completed(status) {
-      all(status);
-      this.style.display = status == "completed" ? "block" : "none";
-    }
-    function route() {
-      var menu = window.location.hash.replace(/\#\//, "") || "all";
-      logic[menu].call(element, repeatscope.status);
-    }
-    cbx.onclick = function(event) {
-      if (repeatscope.status == "active") {
-        repeatscope.status = "completed";
-        element.className = "completed";
-        scope.activenum--;
-        scope.completednum++;
-      } else {
-        repeatscope.status = "active";
-        element.className = "active";
-        scope.activenum++;
-        scope.completednum--;
-      }
-      route();
-      scope.apply();
-    };
-    var me = this;
-    var laststatus;
-    element.ondblclick = function(e) {
-      this.className = "editing";
-      laststatus = scope.status;
-      scope.status = "editing";
-      element.querySelector(".edit").focus();
-    };
-    element.querySelector(".edit").addEventListener("blur", function() {
-      scope.status = laststatus;
-      element.className = laststatus === "completed" ? "completed" : "";
-    });
-    route();
+define("model.local", function(exports, require, module) {
+  var STORAGE_ID = "todos-riverjs";
+  exports.get = function() {
+    return JSON.parse(localStorage.getItem(STORAGE_ID) || "[]");
+  };
+  exports.save = function(todos) {
+    localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
   };
 });
 
-define("river.grammer.filter", function(exports, require, module) {
+define("river.grammer.route", function(exports, require, module) {
+  exports = module.exports = function(str, scope, element) {};
+});
+
+define("river.grammer.status", function(exports, require, module) {
   exports = module.exports = function(str, scope, element) {
-    var eom = this.eom;
-    window.onhashchange = function() {
-      navigate();
-    };
-    function navigate() {
-      var menu = window.location.hash.replace(/\#\//, "") || "all";
-      var domlist = element.querySelectorAll("#filters a");
-      clear(domlist);
-      logic[menu].call(domlist, scope.todos, eom.todos);
-    }
-    function clear(domlist) {
-      for (var i = 0, len = domlist.length; i < len; i++) {
-        domlist[i].className = "";
-      }
-    }
-    var logic = {};
-    logic.all = function(todos, eom) {
-      this[0].className = "selected";
-      for (var i = 0, len = todos.length; i < len; i++) {
-        eom[i].repeat.style.display = "block";
+    var checkbox = element.querySelector("[type=checkbox]");
+    var sta = {
+      active: function() {
+        element.className = "";
+        checkbox.checked = false;
+      },
+      completed: function() {
+        element.className = "completed";
+        checkbox.checked = true;
       }
     };
-    logic.active = function(todos, eom) {
-      this[1].className = "selected";
-      for (var i = 0, len = todos.length; i < len; i++) {
-        if (todos[i].status == "active") {
-          eom[i].repeat.style.display = "block";
-        } else {
-          eom[i].repeat.style.display = "none";
-        }
-      }
+    sta[scope.todo.status]();
+    element.ondblclick = function(event) {
+      var t = this.className;
+      this.className = t + " editing";
+      element.querySelector(".edit").focus();
     };
-    logic.completed = function(todos, eom) {
-      this[2].className = "selected";
-      for (var i = 0, len = todos.length; i < len; i++) {
-        if (todos[i].status == "completed") {
-          eom[i].repeat.style.display = "block";
-        } else {
-          eom[i].repeat.style.display = "none";
-        }
-      }
-    };
-    navigate();
+    var editinput = element.querySelector(".edit");
+    editinput.addEventListener("blur", function() {
+      var t = element.className;
+      element.className = t.replace(/\sediting/, "");
+    });
   };
 });
