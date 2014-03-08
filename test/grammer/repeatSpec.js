@@ -27,7 +27,7 @@ main(function(){
             '<li repeat="lib in frameworks">' +
               '<span>{{ lib.name }}</span>' +
               '<ul>' + 
-                '<li repeat="user in fre.users">' + 
+                '<li repeat="user in lib.users">' + 
                   '<span>{{ user.name }}</span>' +
                 '</li>' +
               '</ul>' +
@@ -62,7 +62,7 @@ main(function(){
             '<li repeat="lib in frameworks">' +
               '<span>{{ lib.name }}</span>' +
               '<ul>' + 
-                '<li repeat="user in fre.users">' + 
+                '<li repeat="user in lib.users">' + 
                   '<span>{{ user}}</span>' +
                 '</li>' +
               '</ul>' +
@@ -193,10 +193,10 @@ main(function(){
       var dom = $compile(
         '<div scope="spec.repeat">' +
           '<ul>' +
-            '<li repeat="lib in m.frameworks" class="lib">' +
+            '<li repeat="lib in frameworks" class="lib">' +
               '<span>{{ lib.name }}</span>' +
               '<ul>' + 
-                '<li repeat="user in fre.users" class="user">' + 
+                '<li repeat="user in lib.users" class="user">' + 
                   '<span>{{ user.comp }}</span>' +
                   '<ol><li repeat="ep in user.emp">{{ep.name}}</li></ol>' +
                 '</li>' +
