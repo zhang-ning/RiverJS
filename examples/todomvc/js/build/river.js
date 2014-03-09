@@ -271,6 +271,8 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
   function update(value, key, eom ,last) {
     var scope = this;
     var oldvalue = last[key];
+    var isEqual = value == oldvalue;
+    if(isEqual) return;
     if (isString(value) || isNumber(value)) {
       if(eom && eom[key]){
         loop(eom[key], function(ele, i) {
@@ -280,11 +282,17 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
           }
           //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
         });
+        var fns = scope.__listeners__ && scope.__listeners__[key] ;
+        if(fns){
+          for (var i = 0, len = fns.length; i < len; i++) {
+            fns[i](value,last[key]);
+          }
+        }
       }
       last[key] = value;
     } else if (isArray(value)) {
       last[key] = oldvalue ? oldvalue : [];
-      diff(value,last[key],eom[key],scope);
+      diff(value,last[key],eom[key],scope,key,last);
     } else if (isObject(value)) {
       oldvalue = oldvalue ? oldvalue : {};
       each(value, function(item, index) {
@@ -293,7 +301,7 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
     }
   }
 
-  function diff(value,oldvalue,eom,scope){
+  function diff(value,oldvalue,eom,scope,key,last){
     var len = value.length >= oldvalue.length ? value.length : oldvalue.length;
     var expect = tools.expect;
     var container = eom.repeatContainer;
@@ -302,9 +310,15 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
       var newvalue = value[i];
       var exists = typeof newvalue !== 'undefined';
       if(exists && !expect(newvalue).toEqual(oldvalue[i])){
-        var neweom = getNewEom(eom,newvalue,scope);
+        var neweom = getNewEom(eom,newvalue,scope,key,i,last);
         var refnode = container.children[i];
-        oldvalue.splice(i,1,newvalue); // sync oldvalue
+        //oldvalue.splice(i,1,newvalue); // sync oldvalue
+        if(typeof newvalue == 'object'){
+          oldvalue[i] = oldvalue[i] || {};
+          cover(oldvalue[i],newvalue);
+        }else{
+          oldvalue[i] = newvalue;
+        }
         eom.splice(i,1,neweom); //sync eom
         container.insertBefore(neweom.repeat,refnode); //sync dom
         if(refnode)container.removeChild(refnode);
@@ -314,6 +328,16 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
         container.removeChild(container.children[i-cnt]);
         cnt++;
       }
+    }
+  }
+
+  function cover(oldvalue,newvalue){
+    for(var x in newvalue){
+      if(typeof newvalue[x] == 'object'){
+        oldvalue[x] = oldvalue[x] || {};
+        cover(oldvalue[x],newvalue[x]);
+      }
+      oldvalue[x] = newvalue[x];
     }
   }
 
@@ -328,20 +352,20 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
     return result;
   }
 
-  function getNewEom(eom,d,parentscope){
+  function getNewEom(eom,d,parentscope,ns,index,last){
     var trans = eom.trans;
     var node = eom.repeatNode;
     var _r = eom.reg;
     var key = eom.key;
-  //  var parentNode = eom.repeatContainer;
     var _n = node.cloneNode(true);
     var m = {};
     var F = function(f){
       this.__eom__ = {};
       this.__last__ = {};
+      this.__listeners__ = {};
       this[key] = f;
       this.__eom__[key] = m;
-      this.__last__[key] = tools.clone(d);
+      this.__last__[key] = last[ns] && last[ns][index] || tools.clone(d);
     };
     F.prototype = parentscope;
     var mod = new F(d);
@@ -359,11 +383,14 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
     }else{
       this._$value = ref;
     }
+    this.__listeners__ = {};
   }
 
   Model.prototype.apply = function() {
-    apply.call(this);
-    apply.call(Object.getPrototypeOf(this));
+    var father = Object.getPrototypeOf(this);
+    var me = this;
+    apply.call(me);
+    apply.call(father);
   };
 
   function apply (){
@@ -371,6 +398,7 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
       , last = this.__last__
       , scope = this;
     if(!_eom) return;
+
     each(this, function(val, index) {
       if(/__/.test(index)) return;
       if (_eom[index] && !tools.expect(last[index]).toEqual(val)) {
@@ -381,6 +409,11 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
   }
 
   Model.prototype.watch = function(eom, repeat) {};
+
+  Model.prototype.onchange = function(id,fn) {
+    var lis = this.__listeners__[id] = this.__listeners__[id] || [];
+    lis.push(fn);
+  };
 
   Model.prototype.inject = function(source) {
     var me = this;
@@ -626,7 +659,7 @@ define('river.grammer.jChange', function() {
   }
   return change;
 });
-define('river.grammer.jclick', function() {
+define('river.grammer.jclick', function(exports,require,module) {
   function click (str,scope,element) {
     var f = str.replace(/\(.*\)/,'');
     var fn = scope[f];
@@ -651,7 +684,8 @@ define('river.grammer.jclick', function() {
       scope.apply();
     };
   }
-  return click;
+
+  exports = module.exports = click;
 });
 define('river.grammer.jcompile',function(){
   return function(){
@@ -741,6 +775,7 @@ define("river.grammer.repeat", function(exports,require,module) {
     eom.trans = trans;
     eom.key = key;
     eom.reg = _r;
+    scope.__children__ = scope.__children__ || [];
 
     if (data && data.length) {
       data.forEach(function(d,i) {
@@ -757,6 +792,8 @@ define("river.grammer.repeat", function(exports,require,module) {
         mod.__eom__[key] =  m;
         mod.__last__ = {};
         mod.__last__[key] = scope.__last__ && scope.__last__[pro][i] || $tool.clone(d);
+        mod.__listeners__ = {};
+        scope.__children__.push(mod);
         trans(_r, _n, mod, key, m);
         m.repeat = _n;
         eom.push(m);
@@ -783,7 +820,8 @@ define("river.grammer.repeat", function(exports,require,module) {
             element: attr,
             expression: attr.nodeValue
           });
-          attr.nodeValue = attr.nodeValue.replace(/{{.*}}/, scope[k]);
+          var value  = typeof scope[key] == 'object' ? scope[key][k] : scope[key];
+          attr.nodeValue = attr.nodeValue.replace(/{{.*}}/, value);
         }
 
         context.node = doc;
