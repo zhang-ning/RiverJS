@@ -333,10 +333,6 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
 
   function cover(oldvalue,newvalue){
     for(var x in newvalue){
-      if(typeof newvalue[x] == 'object'){
-        oldvalue[x] = oldvalue[x] || {};
-        cover(oldvalue[x],newvalue[x]);
-      }
       oldvalue[x] = newvalue[x];
     }
   }
