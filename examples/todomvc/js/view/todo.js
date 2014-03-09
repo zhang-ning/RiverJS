@@ -47,7 +47,7 @@ function todo(str,scope,element){
 
   //blur on input.edit show readView
   editinput.addEventListener('blur',function(){
-    readView(element);
+    readView(element,scope);
   })
 
   //when user stroke enter or esc key show readView
@@ -55,7 +55,7 @@ function todo(str,scope,element){
     var enter = event.keyCode === 13 || false;
     var esc = event.keyCode === 27 || false;
     if(enter|| esc){
-      readView(element);
+      readView(element,scope);
     }
   }
 }
@@ -70,7 +70,7 @@ function writeView(element){
   element.querySelector('.edit').focus();
 }
 
-function readView(element){
+function readView(element,scope){
   var t = element.className;
   element.className = t.replace(/\sediting/,'');
   ctrl.save(scope.todos);
