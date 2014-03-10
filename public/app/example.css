@@ -84,6 +84,9 @@ nav span{
   word-spacing:-6px;
   letter-spacing:3px;
 }
+.logo span:hover{
+  border-bottom:none;
+}
 .logo span{
   vertical-align:bottom;
   margin-left:-2px;
