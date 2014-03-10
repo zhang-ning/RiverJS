@@ -11,6 +11,29 @@ header.row{
   padding:25px 60px;
 }
 
+.main{
+  position:relative;
+}
+
+.side-bar{
+  position:absolute;
+  width:200px;
+  height:500px;
+}
+
+.stage{
+  margin-left:200px;
+}
+
+.active,nav span:hover{
+  border-bottom:2px solid #dbdbdb;
+  padding-bottom:3px;
+}
+
+.active a{
+  color:#89A2B8;
+}
+
 .row{
   padding:0 60px;
 }
@@ -28,8 +51,12 @@ li a{
   line-height:1.8em
 }
 
-li a:hover{
+li.selected a,li a:hover{
   border-bottom:2px solid #eee;
+}
+
+li.selected a{
+  color:#89A2B8;
 }
 
 nav span{
