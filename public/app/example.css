@@ -24,6 +24,9 @@ header.row{
 .stage{
   margin-left:200px;
 }
+.stage iframe{
+  min-height:550px;
+}
 
 .active,nav span:hover{
   border-bottom:2px solid #dbdbdb;
