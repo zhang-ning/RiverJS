@@ -129,6 +129,7 @@ define('river.engine',function() {
         }
       }
       value = typeof value == 'object' ? JSON.stringify(value) : value;
+      if(typeof value == 'undefined') value = '';
       doc.nodeValue = doc.nodeValue.replace(/\r|\n/g,'').replace(/{{.*}}/, value);
     }
   }
@@ -624,8 +625,8 @@ define('river.grammer.jbind',function(exports,require,module){
     var value = scope[key];
     if(typeof value === 'object'){
       result = getValue(ns.replace(key+'.',''),value);
-    }else{
-      return value;
+    }else if(typeof value !== 'undefined'){
+      result = value;
     }
     return result;
   }
