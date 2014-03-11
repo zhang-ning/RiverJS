@@ -25,7 +25,7 @@ header.row{
   margin-left:200px;
 }
 .stage iframe{
-  min-height:550px;
+  min-height:400px;
 }
 
 .active,nav span:hover{
