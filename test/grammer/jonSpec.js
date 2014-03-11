@@ -58,7 +58,7 @@ main(function(){
     it("first result should be hello",function(){
       $key('keydown',14,'enter',input);
       foo.result2 = msg.textContent;
-      expect(foo.result2).toEqual('undefined');
+      expect(foo.result2).toEqual('');
       expect(foo.ctrl.calls.length).toEqual(1);
     });
 
