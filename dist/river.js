@@ -908,6 +908,14 @@ define("river.grammer.repeat", function(exports,require,module) {
     }
     if (reg.test(doc.nodeValue)) {
       var k = doc.nodeValue.replace(reg, '').replace(key + '.', '');
+      $tool.buildobj(k,'.',eom,function(obj,key){
+        obj[key] = obj[key] || [];
+        obj[key].push({
+          element: doc,
+          expression: doc.nodeValue
+        });
+      });
+      /*
       if (!eom[k]) {
         eom[k] = [];
       }
@@ -915,10 +923,16 @@ define("river.grammer.repeat", function(exports,require,module) {
         element: doc,
         expression: doc.nodeValue
       });
+      */
       //this change is for identify two case: 
       //  1. scope = {}
       //  2. scope = "string" or number
       var value  = typeof scope[key] == 'object' ? scope[key][k] : scope[key];
+      if(typeof scope[key] === 'object'){
+        $tool.buildobj(k,'.',scope[key],function(obj,key){
+          value = obj[key];
+        });
+      }
       doc.nodeValue = doc.nodeValue.replace(/{{.*}}/, value);
     }
     if (doc.childNodes && doc.childNodes.length && !hasRepeat) {
