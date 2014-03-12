@@ -67,6 +67,7 @@ describe("test code.tool", function() {
       expect(tool.expect(true).toEqual(true)).toBe(true);
     });
 
+
   });
 
   describe("tool: clone array", function() {
@@ -74,6 +75,39 @@ describe("test code.tool", function() {
     it('should still array after clone', function() {
       var dest = tool.clone(source);
       expect(tool.isArray(dest)).toBe(true);
+    });
+  });
+
+  describe('build or check objet by string',function(){
+    it('build a empty object',function(){
+      var ns = 'a.b.c'
+      var bu = tool.buildobj;
+      var mm= bu(ns,'.',{},function(obj,key){
+        obj[key] = [];
+      });
+      expect(mm.a.b.c).toEqual([]);
+    });
+
+    it('already have a obj',function(){
+      var ns = 'a.b.c'
+      var bu = tool.buildobj;
+      var foo = {};
+      bu(ns,'.',foo,function(obj,key){
+        obj[key] = obj[key] || [];
+        obj[key].push(1);
+      });
+      expect(foo.a.b.c).toEqual([1]);
+    });
+
+    it('simple case',function(){
+      var ns = 'a'
+      var bu = tool.buildobj;
+      var foo = { a : [1] };
+      bu(ns,'.',foo,function(obj,key){
+        obj[key] = obj[key] || [];
+        obj[key].push(1);
+      });
+      expect(foo.a).toEqual([1,1]);
     });
   });
 });

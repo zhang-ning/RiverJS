@@ -27,7 +27,7 @@ main(function(){
       });
 
       var dom = $compile('<div scope="spec.jon">' +
-                         '<input type="text" jon="keydown | ctrl(msg)" jbind="msg"/>' +
+                         '<input type="text" jon="keydown:ctrl(msg)" jbind="msg"/>' +
                          '<p>{{ msg }}</p>' +
                          '</div>');
       $scan(dom);

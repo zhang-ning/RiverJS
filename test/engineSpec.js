@@ -50,4 +50,13 @@ describe('The template enginee render feature ',function(){
     $scan(element);
     expect("x").toBe(element.textContent);
   });
+
+  it("the namespace value should work",function(){
+    define('testCtrl',function(exports,require,module){
+      exports.user = { jonathan:{ phone:12345 } };
+    });
+    var element = $compile("<div scope='testCtrl'>{{ user.jonathan.phone }}</div>");
+    $scan(element);
+    expect("12345").toBe(element.textContent);
+  });
 });
