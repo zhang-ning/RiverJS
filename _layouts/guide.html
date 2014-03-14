@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="example page,two-way binding,cmd,CMD,river,riverjs,jonathan,angularjs">
+  <meta name="author" content="Jonathan,jonathan,zhang-ning">
+  <meta name="keywords" content="two-way binding,cmd,CMD,river,riverjs,joanthan,angularjs">
+  <title>Riverjs Guide</title>
+  <link rel="icon" href="../assert/image/logo.png" type="image/x-icon" >
+  <link rel="stylesheet" href="../css/example.css" type="text/css" media="screen" title="no title" charset="utf-8">
+</head>
+<body>
+<header class="row">
+  <nav>
+    <div class="logo">
+      <a href="../">
+        <img src="../assert/image/logo.png" alt="riverjs">
+        <span> 
+          iver.js
+        </span>
+      </a>
+    </div>
+    <span><a href="#">Guide</a></span>
+    <span><a href="#">API Reference</a></span>
+    <span class="active"><a href="#">Examples</a></span>
+    <span><a href="#">Github</a></span>
+  </nav>
+</header>
+
+
+<div class="row main">
+  <section class="side-bar">
+    <ul class="menu">
+    {% for post in site.tags['guide'] %}
+      <li><a href="{{post.url | remove_first:'/guide/' }}">{{ post.title }}</a></li>
+    {% endfor %}
+    </ul>
+  </section>
+  <section class="stage col-md-6">
+    {{ content }}
+  </section>
+</div>
+</body>
+</html>
