@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>{{ page.title }}</title>
+<meta name="viewport" content="width=device-width">
+
+<!-- syntax highlighting CSS -->
+<link rel="stylesheet" href="/css/syntax.css">
+
+<!-- Custom CSS -->
+<link rel="stylesheet" href="/css/main.css">
+<link rel="icon" href="assert/image/logo.png" type="image/x-icon" >
+<script src="assert/river.js" type="text/javascript" charset="utf-8"></script>
+<script src="assert/app/controller/controller.js" type="text/javascript" charset="utf-8"></script>
+<script src="assert/app/controller/your.firstpage.controller.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+
+<div class="site">
+  <div class="header">
+    <nav>
+      <a class="extra" href="/guide">Guide</a>
+      <a class="extra" href="/api">API Reference</a>
+      <a class="extra" href="/examples">Examples</a>
+      <a class="extra" href="/why">Why</a>
+    </nav>
+    <p class="logo"> 
+    <img  src="assert/image/logo.png" alt="RiverJS">
+    <span>iver.js</span>
+    </p>
+  </div>
+
+  <div class="main">
+    <h1> CMD Two-Way Data Binding</h1>
+    <div class="desc">
+      River.js is a small framework focus on module enclosure and data binding, <br> 
+      borrows scope, directive ideas from AngulaJS but keep same style with node module definition.
+    </div>
+    {{ content }}
+  </div>
+  <hr>
+  <p>
+  Released under the <a href="http://opensource.org/licenses/MIT">MIT</a> License 
+  </p>          
+  <p>
+  Copyright (c) 2014 <a href="mailto:hunter.dding@gmail.com">Jonathan Zhang</a>
+  </p>
+</div>
+
+</body>
+</html>

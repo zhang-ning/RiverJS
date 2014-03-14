@@ -1,0 +1,141 @@
+/*****************************************************************************/
+/*
+/* Common
+/*
+/*****************************************************************************/
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body { height: 100%; }
+
+body {
+  background-color: #FFF;
+  font: 13.34px Helvetica, Arial, sans-serif;
+  font-size: small;
+  text-align: center;
+}
+
+h1 { margin-bottom: 1em; }
+p { margin: 1em 0; }
+
+a         { color: #00a; }
+a:hover   { color: #000; }
+a:visited { color: #a0a; }
+
+.highlight,.example{
+  display:inline-block;
+  text-align:left;
+  border:1px solid #eee;
+  padding: 20px;
+  box-shadow:2px 2px 3px #ddd;
+  vertical-align:top;
+  margin:0 20px;
+  max-width:400px;
+  overflow-x:auto;
+  width:400px;
+}
+
+.symble{
+  display:inline-block;
+  margin-top:100px;
+}
+
+.group .symble{
+  margin:0;
+  display:block;
+  /* width:400px; */
+  text-align:center;
+}
+
+.group{
+  display:inline-block;
+}
+
+.lineno{
+}
+
+hr{
+  margin: 20px 0;
+  border:1px solid #ddd;
+}
+
+input{
+    outline: none;
+    padding: 5px;
+    border:1px solid #ddd;
+    transition: .5s;
+}
+input:focus{
+    border: 1px solid rgba(82, 168, 236, 0.8);
+    box-shadow: 0 0 3px rgba(82, 168, 236, 0.6);
+}
+
+.btn{
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 3px 3px 3px #eee;
+  border-radius: 5px;
+}
+.btn:hover{
+  /* background: #eee; */
+  box-shadow: 0px 0px 3px #eee;
+}
+.btn:active {
+    box-shadow: inset 3px 3px 3px #eee;
+}
+
+
+/*****************************************************************************/
+/*
+/* Home
+/*
+/*****************************************************************************/
+.posts span {
+  color: #aaa;
+  font-family: Monaco, "Courier New", monospace;
+  font-size: 80%;
+}
+
+.logo{
+  color:#5b8b8f;
+  font-size: 1.25em;
+  text-shadow: 0 0 1px rgba(0,0,0,.1);
+  word-spacing: -6px;
+  letter-spacing: 3px;
+}
+.logo span{
+  display:inline-block;
+  margin-bottom:10px;
+  vertical-align:bottom;
+}
+
+.main .desc{
+  font-size:1.2em;
+  color:#949494;
+}
+
+.header nav a{
+  margin:0 25px;
+}
+
+/*****************************************************************************/
+/*
+/* Site
+/*
+/*****************************************************************************/
+.site{
+  padding: 50px 0;
+}
+.row{
+  /* text-align: center; */
+  padding:30px 20px;
+}
+
+
