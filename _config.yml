@@ -1,4 +1,4 @@
 name: RiverJS
 markdown: rdiscount
 pygments: true
-baseurl: /RiverJS
+relative_permalinks: true
