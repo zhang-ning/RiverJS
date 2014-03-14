@@ -182,7 +182,7 @@ input:focus{
 @-webkit-keyframes myfirst
 {
   0%,100% {-webkit-transform: translateX(0);}
-  100% {z-index:10; -webkit-transform: rotate(-6deg)}
+  100% {z-index:10; -webkit-transform: rotate(-6deg);-webkit-backface-visibility: hidden;}
   50% {-webkit-transform: translateX(300px) translateY(-10px) rotate(6deg);z-index:0}
 }
 
