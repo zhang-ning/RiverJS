@@ -1,3 +1,4 @@
 name: RiverJS
 markdown: rdiscount
 pygments: true
+baseurl: /RiverJS

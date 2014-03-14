@@ -2,7 +2,7 @@
 layout: example
 title:  "Github Commits"
 author: jonathan
-permalink: github-commits
+permalink: examples/github-commits.html
 tag: example
 ---
 
