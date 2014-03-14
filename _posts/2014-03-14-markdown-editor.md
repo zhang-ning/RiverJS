@@ -2,7 +2,7 @@
 layout: example
 title:  "Markdown Editor"
 author: jonathan
-permalink: markdown-editor
+permalink: examples/markdown-editor.html
 tag: example
 ---
 
