@@ -6,7 +6,7 @@ permalink: examples/github-commits.html
 tag: example
 ---
 
-#TodoMVC Example
+#Github Commits Example
 >This example fetches latest RiverJS commits data from GitHub's API and displays them as a list. You can switch between the master and dev branches.
 
 

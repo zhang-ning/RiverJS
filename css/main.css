@@ -22,9 +22,10 @@ body {
 h1 { margin-bottom: 1em; }
 p { margin: 1em 0; }
 
-a         { color: #00a; }
-a:hover   { color: #000; }
-a:visited { color: #a0a; }
+.extra {
+  color:#7f787d;
+  text-decoration: none;
+}
 
 .highlight,.example{
   display:inline-block;
@@ -42,6 +43,7 @@ a:visited { color: #a0a; }
 .symble{
   display:inline-block;
   margin-top:100px;
+  vertical-align: top;
 }
 
 .group .symble{
@@ -103,11 +105,36 @@ input:focus{
   font-size: 80%;
 }
 
+.or{
+  position: relative;
+  width: 489px;
+  height: 254px;
+  margin-top: 25px;
+}
+.or:hover .highlight:last-child{
+   -webkit-animation: myfirst 1s forwards; 
+}
+.or .highlight:last-child{
+   -webkit-animation: mysecond 1s forwards; 
+}
+.or .highlight{
+  position:absolute;
+  top:0px;
+  left:0px;
+  height:200px;
+  -webkit-transition: 1s;
+}
+.or .highlight:last-child{
+  -webkit-transform: rotate(-6deg);
+  z-index: -10;
+}
+
 .logo{
   color:#5b8b8f;
   font-size: 1.25em;
   text-shadow: 0 0 1px rgba(0,0,0,.1);
   word-spacing: -6px;
+  margin: 50px 0;
   letter-spacing: 3px;
 }
 .logo span{
@@ -138,4 +165,31 @@ input:focus{
   padding:30px 20px;
 }
 
+//animation
+@-webkit-keyframes bounce {
+  0%,100% {
+    -webkit-transform: translateX(0);
+  }
+
+  40% {
+    -webkit-transform: translateX(300px);
+  }
+
+  60% {
+    -webkit-transform: translateX(100px);
+  }
+} 
+@-webkit-keyframes myfirst
+{
+  0%,100% {-webkit-transform: translateX(0);}
+  100% {z-index:10; -webkit-transform: rotate(-6deg)}
+  50% {-webkit-transform: translateX(300px) translateY(-10px) rotate(6deg);z-index:0}
+}
+
+@-webkit-keyframes mysecond
+{
+  0% {-webkit-transform: translateX(0);z-index:10}
+  100% {z-index:-10; -webkit-transform: rotate(-6deg)}
+  50% {-webkit-transform: translateX(300px) translateY(-10px) rotate(6deg);z-index:0}
+}
 
