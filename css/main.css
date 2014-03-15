@@ -152,6 +152,21 @@ input:focus{
   margin:0 25px;
 }
 
+/***********
+ *
+ * why
+ *
+ * *******/
+.why{
+  width:1024px;
+  margin:0 auto;
+  text-align: left;
+  min-height:500px;
+  /* font-size: 15px; */
+  color: #34495e;
+  margin-bottom: 100px;
+}
+
 /*****************************************************************************/
 /*
 /* Site
