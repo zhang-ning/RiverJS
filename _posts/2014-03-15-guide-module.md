@@ -99,8 +99,17 @@ the module name is based on the folder structure you definded,for example if you
 folder structure `a/b/c/d/e/moduleA` , then you can `require('a.b.c.d.e.moduleA')` to call it in any modules.
 another thing is that you can minify the `build/app.js` or add sourceMap support by changing `river.json` 
 
->![river.json](../assert/image/river-json.png)
-
+```
+      {
+        "version": "1.0.82",//current riverjs version
+        "dist": "./build",  //default dist folder
+        "alias": {
+          "river.grammer": "grammar"
+        },
+        "sourcemap": false, //true, build with sourceMap
+        "minify": false     //true, build with minified
+      }
+```
 
 
 
