@@ -11,6 +11,7 @@
   <link rel="icon" href="../assert/image/logo.png" type="image/x-icon" >
   <!-- syntax highlighting CSS -->
   <link rel="stylesheet" href="../css/syntax.css">
+  <link rel="stylesheet" href="../css/common.css">
   <link rel="stylesheet" href="../css/example.css" type="text/css" media="screen" title="no title" charset="utf-8">
 </head>
 <body>
@@ -35,7 +36,8 @@
 <div class="row main">
   <section class="side-bar">
     <ul class="menu">
-    {% for post in site.tags['guide'] %}
+    {% assign guides = site.tags['guide'] | sort: 'date' %}
+    {% for post in guides %}
       <li><a href="{{post.url | remove_first:'/guide/' }}">{{ post.title }}</a></li>
     {% endfor %}
     </ul>
@@ -43,6 +45,15 @@
   <section class="stage">
     {{ content }}
   </section>
+  <div class="footer">
+      <hr>
+      <p>
+        Released under the <a href="http://opensource.org/licenses/MIT">MIT</a> License 
+      </p>          
+      <p>
+        Copyright (c) 2014 <a href="mailto:hunter.dding@gmail.com">Jonathan Zhang</a>
+      </p>
+    </div>
 </div>
 </body>
 </html>

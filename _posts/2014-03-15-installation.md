@@ -8,13 +8,14 @@ tag: guide
 
 # Installation
 
+-----------
+
 Compatibility Note: river.js doesn't test low version ie yet,
 all others is fine.
 
 
 ## Standalone
 
----------
 
 
 Simply download and include with a script tag. `define` and `main` will be registered as a global variable.  
@@ -25,13 +26,12 @@ Simply download and include with a script tag. `define` and `main` will be regis
 
 ## NPM
 
----------
 
 
 ```
-npm install -g riverjs
-cd your/app/folder
-riverjs build .
+    npm install -g riverjs
+    cd your/app/folder
+    riverjs build .
 ```
 
 {% highlight html%}
@@ -41,7 +41,6 @@ riverjs build .
 
 ## Bower
 
-------------
 
 
 {% highlight html html%}
