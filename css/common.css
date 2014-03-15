@@ -8,10 +8,12 @@
 
 .highlight code,pre code{
   color:#34495e;
+  background: transparent;
 }
 
 code{
   color: #B12B70;
+  background: #f9f2f4;
 }
 
 .footer{
