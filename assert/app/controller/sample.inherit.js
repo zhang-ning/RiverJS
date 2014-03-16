@@ -6,7 +6,7 @@ define('ctl.father',function(){
 });
 
 
-define('ctl.son',function(){
+define('ctl.son',function(exports,require,module){
   return function(){
     this.name = "Tomas";
     this.skill = "dance";

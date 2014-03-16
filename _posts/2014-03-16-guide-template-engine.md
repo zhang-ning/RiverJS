@@ -19,16 +19,36 @@ this `{{ 1 + 2 }}` ,riverjs don't understand what you want to do.But when you tr
 the variable `name` and apply it to the current element text node.
 {% endraw %}
 
->There are only 5 build-in markup commands you need know, they are `scope`,`repeat`,`jbind`,
-`jclick`,`jon` ,and that's all. RiverJS encourage programmer use less buildin ,customized or extended markup 
-commands when build app with riverjs. For example , when I wrote todoMVC example with riverjs, there are only 2 extended
-markup commands,the html is clean,the source is easy for human to read. It's quite different with AngularJS or anyother data binding library have strong dependence
-on markup commands(AngularJS call it directive).Too much mockup project will be a disaster for people maintaining,
-as html is not programming.If you ever developed a project with many customized markup, you will fully understand
-what I'm talking about. 
+>There are 7 build-in markup commands(or we call it directive in AngularJS) in RiverJS, they are `scope`,`repeat`,`jbind`,
+`jclick`,`jon`,`jchange`,'jcompile'. RiverJS encourage programmer use less markup commands when build app to reduce
+complexit.
 
 
-### Let's know `scope` and `repeat` first.
+
+### Markup 
+
+> `scope` and `repeat` can be nested
+
+##### Nest repeat
+{% raw %}
+<div class="example">
+  <div scope="your.class.music">
+    <p>{{ title }} </p>
+    <ul>
+      <li repeat="singer in singers">
+      <span>{{singer.name}}</span> 
+        <ul>
+          <li repeat="song in singer.songs">
+            <span>{{song.name}}</span>
+            <a href="{{song.url}}">{{song.url}}</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endraw %}
+
 
 {% highlight html linenos%}
 {% raw %}
@@ -50,3 +70,99 @@ what I'm talking about.
 </div>
 {% endraw %}
 {% endhighlight %}
+
+{% highlight javascript linenos%}
+define('your.class.music',function(exports,require,module){
+  var myMusicfromDB = {
+    title: 'Welcome to my Music zone',
+    singers: [{
+      name: 'Michael Jackson',
+      songs:[{
+        url:'http://some.mp3',
+        name:'heal the world'
+      },{
+        url:'http://beatit.mp3',
+        name:'black and white'
+      }]
+    }, {
+      name: 'Avril Lavigne',
+      songs:[{
+        url:'http://some.mp3',
+        name:'Smile'
+      },{
+        url:'http://some.mp3',
+        name:'Girl friend'
+      }]
+    },{
+      name: 'Lady Gaga',
+      songs:[{
+        url:'http://some.mp3',
+        name:'Pock face'
+      },{
+        url:'http://some.mp3',
+        name:'Bad romance'
+      }]
+    },{
+      name: 'Rihanna',
+      songs:[{
+        url:'http://some.mp3',
+        name:'umbrella'
+      }]
+    }]
+  }
+  return myMusicfromDB
+
+  //or inject to exports
+  //exports.myMusicfromDB = myMusicfromDB;
+
+  //or inject to this
+  //exports = module.exports = function(){
+  //  this.myMusicfromDB = myMusicfromDB;
+  //}
+})
+{% endhighlight %}
+
+##### Nest scope
+
+{% raw %}
+<div scope="ctl.father" class="example">
+  <p>Name: {{ name }}</p>
+  <div scope ="ctl.son">
+    <p>Name : {{ name }}</p> <!-- cover father's pro -->
+    <p>Skill : {{ skill }}</p> 
+    <p>Where : {{ where }}</p> <!-- inherit from father -->
+  </div>
+</div>
+{% endraw %}
+
+
+{% highlight html linenos%}
+{% raw %}
+<div scope="ctl.father">
+  <p>Name: {{ name }}</p>
+  <div scope ="ctl.son">
+    <p>Name : {{ name }}</p> <!-- cover father's pro -->
+    <p>Skill : {{ skill }}</p> 
+    <p>Where : {{ where }}</p> <!-- inherit from father -->
+  </div>
+</div>
+{% endraw %}
+{% endhighlight %}
+
+{% highlight javascript linenos%}
+define('ctl.father',function(exports,require,module){
+  return function(){
+    this.name = "Peter";
+    this.where = "China";
+  };
+});
+
+
+define('ctl.son',function(){
+  return function(){
+    this.name = "Tomas";
+    this.skill = "dance";
+  };
+});
+{% endhighlight %}
+

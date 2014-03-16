@@ -29,6 +29,19 @@ define('module.A',function(exports,require,module){
 });
 {% endhighlight %}
 
+> you also can use `return` to exports api
+
+{% highlight javascript linenos%}
+//module A
+define('module.A',function(exports,require,module){
+  //exports module.A.sing Api
+  return {
+    sing : function(song){
+      console.log(song + 'is playing');
+    }
+  }
+});
+{% endhighlight %}
 #### Dependence
 {% highlight javascript linenos%}
 //module B
@@ -40,6 +53,17 @@ define('module.B',function(exports,require,module){
 });
 {% endhighlight %}
 
+> you also can use `this.need` to handle dependence
+
+{% highlight javascript linenos%}
+//module A
+define('module.A',function(exports,require,module){
+  //get module.A
+  var A = this.need('module.A');
+  //call sing api
+  A.sing('Heal the world');
+});
+{% endhighlight %}
 
 `main` function is for registting a anonymous modules and will be executed immediately.
 It's the entrance of your programme ,this is influenced by other language's `main keyword`.
@@ -54,6 +78,8 @@ main(function(exports,require,module){
   require('module.B');
 });
 {% endhighlight %}
+
+> `return` and `this.need` style also can be used in main function
 
 #### Pre-build process
 
