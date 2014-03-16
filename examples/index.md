@@ -3,4 +3,5 @@ title: RiverJS CMD Two-way binding
 layout: example
 ---
 
-{{ site.tags['example'][0].content }} 
+{% assign examples = site.tags['example'] | sort: 'date' %}
+{{ examples[0].content }} 

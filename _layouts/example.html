@@ -33,7 +33,8 @@
 <div class="row main">
   <section class="side-bar">
     <ul class="menu">
-    {% for post in site.tags['example'] %}
+    {% assign examples = site.tags['example'] | sort: 'date' %}
+    {% for post in examples %}
       <li><a href="{{post.url | remove_first:'/examples/' }}">{{ post.title }}</a></li>
     {% endfor %}
     </ul>
