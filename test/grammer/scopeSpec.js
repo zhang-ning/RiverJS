@@ -3,6 +3,21 @@ main(function(){
   var $scan = this.need('river.engine').scan;
   var $trigger = this.need('river.scenario').trigger;
 
+
+  describe("test other tag in scope",function(){
+    var foo;
+    define('a',function(){});
+    define('river.grammer.my',function(){
+      foo=true
+    });
+    var dom = '<div scope="a" my></div>';
+    $scan($compile(dom));
+
+    it("should work",function(){
+      expect(foo).toBe(true);
+    });
+  })
+
   describe("test grammer scope feature.",function(){
     var dom,foo,scope,subscope;
     beforeEach(function(){
