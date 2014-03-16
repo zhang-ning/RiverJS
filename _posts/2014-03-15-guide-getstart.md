@@ -67,3 +67,70 @@ define('river.grammer.myview',function(exports,require,module){
 
 
 ### A Quick Example
+
+[JSFiddle](http://jsfiddle.net/zhning/a7eD7/1/);
+
+
+{% raw %}
+<div class="example">
+  <div scope="a" myview="5" >
+    <p>Module Name : {{ name }}</p>
+    <p>PV Click : <strong> {{ pv }} </strong></p>
+    <button jclick="add">add</button>
+    <button jclick="reset">reset</button>
+  </div>
+</div>
+{% endraw %}
+
+Controller
+{% highlight javascript%}
+define('a', function (exports, require, module) {
+    exports.name = 'a';
+    exports.pv = 0;
+    exports.add = function () {
+      exports.pv++;
+    }
+    exports.reset = function () {
+      exports.pv=0;
+    }
+});
+{% endhighlight %}
+
+View 
+
+{% highlight html%}
+{% raw %}
+<div scope="a" myview="5">
+  <p>Module Name : {{ name }}</p>
+  <p>PV Click : <strong> {{ pv }} </strong></p>
+  <button jclick="add">add</button>
+  <button jclick="reset">reset</button>
+</div>
+{% endraw %}
+{% endhighlight %}
+
+{% highlight javascript%}
+define('river.grammer.myview', function (exports, require, module) {
+    exports = module.exports = myview;
+
+    function myview(max, scope, element) {
+      scope.onchange('pv', function (newvalue) {
+        var warning = Number(newvalue) >= Number(max);
+        render(element,warning)
+      })
+    }
+
+    function render(element,warning) {
+      var p = element.querySelector('strong')
+      p.className = warning ? 'warning' : '';
+    }
+})
+{% endhighlight %}
+
+Css
+{% highlight css%}
+.warning{
+  color : red;
+  font-size:1.2em;
+}
+{% endhighlight %}

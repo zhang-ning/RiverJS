@@ -95,3 +95,8 @@ nav span{
 .menu{
   padding-left:10px;
 }
+
+.warning{
+  color : red;
+  font-size:1.2em;
+}
