@@ -1,13 +1,13 @@
 ---
 layout: guide
-title:  "template engine"
+title:  "tag engine"
 author: jonathan
-permalink: guide/template-engine.html
+permalink: guide/tag-engine.html
 tag: guide
 ---
 
 
-# Template Engine
+# Tag Engine
 
 -----------
 
