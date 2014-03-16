@@ -9,6 +9,9 @@
   <meta name="keywords" content="two-way binding,cmd,CMD,river,riverjs,joanthan,angularjs">
   <title>Riverjs API</title>
   <link rel="icon" href="../assert/image/logo.png" type="image/x-icon" >
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="../css/syntax.css">
+  <link rel="stylesheet" href="../css/common.css">
   <link rel="stylesheet" href="../css/example.css" type="text/css" media="screen" title="no title" charset="utf-8">
 </head>
 <body>
@@ -33,9 +36,23 @@
 <div class="row main">
   <section class="side-bar">
     <ul class="menu">
-    {% for post in site.tags['api'] %}
-      <li><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
-    {% endfor %}
+      <li>core
+        <ul>
+          {% for post in site.tags['api.core'] %}
+            <li><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </li>
+      <li>grammer
+        <ul>
+          {% for post in site.tags['api.grammer'] %}
+            <li><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% for post in site.tags['api'] %}
+        <li><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
+      {% endfor %}
     </ul>
   </section>
   <section class="stage">

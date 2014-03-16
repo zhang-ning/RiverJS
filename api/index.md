@@ -3,4 +3,4 @@ title: RiverJS CMD Two-way binding
 layout: api
 ---
 
-{{ site.tags['api'][0].content }} 
+{{ site.tags['api.core'][0].content }} 
