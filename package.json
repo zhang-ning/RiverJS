@@ -25,7 +25,7 @@
     "requirejs": "~2.1.9",
     "karma-requirejs": "~0.2.0",
     "karma-phantomjs-launcher": "~0.1.1",
-    "karma": "~0.10.8",
+    "karma": "0.10.8",
     "karma-mocha": "~0.1.1",
     "chai": "~1.8.1",
     "jsdoc": "~3.3.0",
