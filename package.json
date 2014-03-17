@@ -1,6 +1,6 @@
 {
   "name": "riverjs",
-  "version": "1.0.83",
+  "version": "1.0.84",
   "description": "a simple font-end framework with extendable two-way binding",
   "main": "Gruntfile.js",
   "directories": {
