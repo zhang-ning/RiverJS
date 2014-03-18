@@ -57,6 +57,12 @@ li a{
 li.selected a,li a:hover{
   border-bottom:2px solid #eee;
 }
+li.selected{
+  list-style: disc;
+}
+li{
+  list-style:none;
+}
 
 li.selected a{
   color:#89A2B8;

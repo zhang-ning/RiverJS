@@ -142,6 +142,10 @@ input:focus{
   margin-bottom:10px;
   vertical-align:bottom;
 }
+.logo a{
+  color:#5b8b8f;
+  text-decoration:none;
+}
 
 .main .desc{
   font-size:1.2em;

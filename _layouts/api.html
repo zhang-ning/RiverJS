@@ -50,21 +50,33 @@
   <section class="side-bar">
     <ul class="menu">
       <li>core
-        <ul>
+        <ul id="core">
           {% for post in site.tags['api.core'] %}
-            <li><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
+            {% if post.url == page.url %}
+              <li class="selected"><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
+            {% else %}
+              <li><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
+            {% endif %}
           {% endfor %}
         </ul>
       </li>
       <li>grammer
         <ul>
           {% for post in site.tags['api.grammer'] %}
+            {% if post.url == page.url %}
+            <li class="selected"><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
+            {% else %}
             <li><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
+            {% endif %}
           {% endfor %}
         </ul>
       </li>
       {% for post in site.tags['api'] %}
+        {% if post.url == page.url %}
+        <li class="selected"><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
+        {% else %}
         <li><a href="{{post.url | remove_first:'/api/' }}">{{ post.title }}</a></li>
+        {% endif %}
       {% endfor %}
     </ul>
   </section>
@@ -74,3 +86,8 @@
 </div>
 </body>
 </html>
+
+<script>
+ var active = document.querySelector('.selected')
+ if(!active) document.querySelector('#core li').className = 'selected';
+</script>

@@ -35,7 +35,11 @@
     <ul class="menu">
     {% assign examples = site.tags['example'] | sort: 'date' %}
     {% for post in examples %}
-      <li><a href="{{post.url | remove_first:'/examples/' }}">{{ post.title }}</a></li>
+      {% if post.url == page.url %}
+        <li class="selected"><a href="{{post.url | remove_first:'/examples/' }}">{{ post.title }}</a></li>
+      {% else %}
+        <li><a href="{{post.url | remove_first:'/examples/' }}">{{ post.title }}</a></li>
+      {% endif %}
     {% endfor %}
     </ul>
   </section>
@@ -45,3 +49,8 @@
 </div>
 </body>
 </html>
+
+<script>
+ var active = document.querySelector('.selected')
+ if(!active) document.querySelector('.menu li').className = 'selected';
+</script>
