@@ -93,6 +93,16 @@ input:focus{
     box-shadow: inset 3px 3px 3px #eee;
 }
 
+@media (max-width: 1040px) {
+  .symble{
+    display:none;
+  }
+  .highlight,.group{
+    margin-bottom:20px;
+  }
+}
+
+
 
 /*****************************************************************************/
 /*
@@ -162,7 +172,8 @@ input:focus{
  *
  * *******/
 .why{
-  width:1024px;
+  width:80%;
+  max-width:1024px;
   margin:0 auto;
   text-align: left;
   min-height:500px;

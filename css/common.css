@@ -4,6 +4,7 @@
   padding: 0 20px;
   box-shadow:2px 2px 3px #ddd;
   margin:20px;
+  overflow:auto;
 }
 
 .highlight code,pre code{
