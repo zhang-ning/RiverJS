@@ -1,13 +1,13 @@
 ---
 layout: guide
-title:  "custom tag"
+title:  "custom grammar"
 author: jonathan
 permalink: guide/custom-tag.html
 tag: guide
 ---
 
 
-# Custom Tag
+# Custom grammar
 
 -------------------------
 
