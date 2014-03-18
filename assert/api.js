@@ -41,3 +41,25 @@ define('spec.jon', function (exports,require,module) {
     }
   };
 });
+
+define('spec.jclick',function(exports,require,module){
+  var me = exports;
+  exports.clickCtrl = function(){
+    if(me.msg === 'hello'){
+      me.msg = 'world';
+    }else{
+      me.msg = 'hello';
+    }
+  }
+});
+
+define('spec.jchange',function(exports,require,module){
+  var me = exports;
+  exports.changeCtrl = function(str){
+    me.msg = str;
+  }
+});
+
+define('testBind',function(exports,require,module){
+  exports.msg = "jbind works";
+});
