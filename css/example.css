@@ -57,10 +57,10 @@ li a{
 li.selected a,li a:hover{
   border-bottom:2px solid #eee;
 }
-li.selected{
+.menu .selected{
   list-style: disc;
 }
-li{
+.menu li{
   list-style:none;
 }
 
