@@ -324,27 +324,32 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
       if(eom && eom[key]){
         loop(eom[key], function(ele, i) {
           ele.element.nodeValue = ele.expression.replace(/{{.*}}/, value);
-          if(ele.element.nodeName == 'INPUT'){
+          if(ele.element.nodeName == 'INPUT' && ele.element.value !== value){
             ele.element.value = ele.expression.replace(/{{.*}}/, value);
           }
           //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
         });
-        var fns = scope.__listeners__ && scope.__listeners__[key] ;
-        if(fns){
-          for (var i = 0, len = fns.length; i < len; i++) {
-            fns[i](value,last[key]);
-          }
-        }
+        pub(scope,key,value,last);
       }
       last[key] = value;
     } else if (isArray(value)) {
       last[key] = oldvalue ? oldvalue : [];
       diff(value,last[key],eom[key],scope,key,last);
+      pub(scope,key,value,last);
     } else if (isObject(value)) {
       oldvalue = oldvalue ? oldvalue : {};
       each(value, function(item, index) {
         update.call(scope,item, index, eom[key], oldvalue);
       });
+    }
+  }
+
+  function pub(scope,key,value,last){
+    var fns = scope.__listeners__ && scope.__listeners__[key] ;
+    if(fns){
+      for (var i = 0, len = fns.length; i < len; i++) {
+        fns[i](value,last[key]);
+      }
     }
   }
 
@@ -444,16 +449,27 @@ define('river.core.model', function(exports,require,module) { //@sourceURL=../li
 
     each(this, function(val, index) {
       if(/__/.test(index)) return;
-      if (_eom[index] && !tools.expect(last[index]).toEqual(val)) {
+      //if (_eom[index] && !tools.expect(last[index]).toEqual(val)) {
+      if (!tools.expect(last[index]).toEqual(val)) {
         update.call(scope,val, index, _eom,last);
         //last[index] = tools.clone(val);
       }
     });
+    var fns = scope.__listeners__ && scope.__listeners__._$scope ;
+    if(fns){
+      for (var i = 0, len = fns.length; i < len; i++) {
+        fns[i](scope,last);
+      }
+    }
   }
 
   Model.prototype.watch = function(eom, repeat) {};
 
   Model.prototype.onchange = function(id,fn) {
+    if(typeof id === 'function'){
+        fn = id;
+        id = '_$scope';
+    }
     var lis = this.__listeners__[id] = this.__listeners__[id] || [];
     lis.push(fn);
   };
@@ -649,18 +665,19 @@ define('river.core.tools', function() {
 });
 define('river.grammer.jbind',function(exports,require,module){
 
+  var tool = require('river.core.tools');
+
   function jbind (str,scope,element){
     var value = getValue(str,scope);
     var oldValue = element.value = value || '';
-    
-    // todo:still have bugs
-    var ns = str.split('.');
-    this.eom[str] = this.eom[str] || [];
-    this.eom[str].push({
-      element:element,
-      expression:"{{"+str+"}}"
+
+    tool.buildobj(str,'.',scope.__eom__,function(obj,key){
+      obj[key] = obj[key] || [];
+      obj[key].push({
+        element: element,
+        expression: "{{"+str+"}}"
+      });
     });
-    
 
     var interval;
 
