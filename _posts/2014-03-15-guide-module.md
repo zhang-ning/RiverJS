@@ -11,7 +11,7 @@ tag: guide
 
 -----------
 
-#### CMD
+#### CommonJS Standard In Browser
 
 >After linking `river.js` in html,there are two Global functions will be occupied,
 one is `define` the other is `main`.
