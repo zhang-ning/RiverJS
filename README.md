@@ -1,8 +1,8 @@
 #RiverJS
 [![Build Status](https://travis-ci.org/zhang-ning/RiverJS.png?branch=master)](https://travis-ci.org/zhang-ning/RiverJS)
 
-###Description
-RiverJS is a simple framework fellow part of CMD standard and contains a extendable two-way binding template-enginee.
+
+RiverJS is a simple framework fellowed CommonJS [module1.1](http://wiki.commonjs.org/wiki/Modules/1.1) standard and contains a extendable two-way binding template-enginee.
 
 ###Tutorials
 [RiverJS](http://besideriver.com/RiverJS)
