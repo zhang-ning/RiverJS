@@ -1,75 +1,33 @@
 #RiverJS
 [![Build Status](https://travis-ci.org/zhang-ning/RiverJS.png?branch=master)](https://travis-ci.org/zhang-ning/RiverJS)
 
-###Description
-RiverJS is a simple framework fellow part of CMD standard and contains a extendable two-way binding template-enginee.
 
-###Build tool
-```
-npm install -g riverjs
-```
-
-###New way wrap module
-
-```
-touch app/hello.js
-```
-
-```javascript
-\\@sourcefile: app/hello.js
-exports.to = function(who) {
-  console.log('hello ' + who);
-}
-
-```
-
-```
-riverjs build app
-```
-
-
-```html
-\\index.html
-<script>
-main(function(exports,require,module){
-  var hello = require('app.hello');
-  hello.to('world');
-});
-</script>
-```
+RiverJS is a simple framework fellowed CommonJS [module1.1](http://wiki.commonjs.org/wiki/Modules/1.1) standard and contains a extendable two-way binding template-enginee.
 
 ###Tutorials
 [RiverJS](http://besideriver.com/RiverJS)
 
 
 ###How to setup dev environment
+
+fork to your own repertory then 
+
+```
+git branch -d new-feature-dev
+```
+
 1 you need to install nodejs 
 
-2 install karma 
+2 install dev dependence
 
 ```javascript
-npm install -g karam
-```
-
-3 install the dev dependence
-
-```javascript
-cd RiverJS
 npm install
 ```
+3 use `make test` to start karma
 
-4 download [PhantomJS](http://phantomjs.org) and put the bin file into 
+4 write your own feature wite unit test
 
-```
-mv /your/path/phantomjs /usr/bin/
-```
-
-or you can change the `karma.conf.js` 
-
-```
-browsers: ['Chrome']
-```
-
+5 send pull request to me
 
 
 ###How to make a distrucbute
@@ -85,7 +43,7 @@ make test
 ```
 
 ###Lisense
- one line to give the program's name and a brief description
+ one line to give the [RIverJS](http://besideriver.com/RiverJS) and a brief description
  Copyright (C) 2014 copyright holder
 
  Permission is hereby granted, free of charge, to any person obtaining
