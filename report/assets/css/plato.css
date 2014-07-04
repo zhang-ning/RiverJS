@@ -26,6 +26,10 @@ a:visited {
   color:#333;
 }
 
+.jumbotron h1{
+  margin-top: 50px;
+}
+
 li {
   line-height: 10px;
 }
