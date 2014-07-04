@@ -1,0 +1,7 @@
+{
+  "laxcomma" : true,
+  "indent"   : false,
+  "newcap"   : false,
+  "asi"      : true,
+  "eqeqeq"   : false
+}
