@@ -14,6 +14,7 @@ minify = node_modules/uglify-js/bin/uglifyjs
 jsdoc = node_modules/.bin/jsdoc
 #karma = node_modules/.bin/karma
 karma = node_modules/karma/bin/karma
+plato = node_modules/.bin/plato
 doc = doc
 doctemplate = node_modules/jsdoc/templates/haruki
 
@@ -36,6 +37,9 @@ clean:
 
 test:
 	$(karma) start
+
+analysis:
+	$(plato) -d report lib -l .jshintrc -t "RiverJS" -x .json
 
 doc:
 	@rm $(doc)/ -rf

@@ -35,6 +35,7 @@
     "karma-requirejs": "~0.2.0",
     "karma-script-launcher": "~0.1.0",
     "mocha": "~1.15.1",
+    "plato": "^1.0.1",
     "requirejs": "~2.1.9",
     "uglify-js": "~2.4.0"
   },
