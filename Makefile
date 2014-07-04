@@ -39,7 +39,7 @@ test:
 	$(karma) start
 
 report:
-	$(plato) -d report lib -l .jshintrc -t "RiverJS" -x .json
+	$(plato) -r -d report -l .jshintrc -t "RiverJS" -x .json lib
 
 doc:
 	@rm $(doc)/ -rf
