@@ -38,7 +38,7 @@ clean:
 test:
 	$(karma) start
 
-analysis:
+report:
 	$(plato) -d report lib -l .jshintrc -t "RiverJS" -x .json
 
 doc:
