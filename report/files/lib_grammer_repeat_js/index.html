@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib/grammer/repeat.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib/grammer/repeat.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">61.52</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">151</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">42.28</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.57</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">define(&quot;river.grammer.repeat&quot;, function(exports,require,module) {
+  var $tool = require(&#039;river.core.tools&#039;)
+    , $scan = require(&#039;river.engine&#039;).scan
+    , model = require(&#039;river.core.model&#039;)
+    , me    = this;
+
+    function loadGrammar(key) {
+      return me.need(&#039;river.grammer.&#039; + key);
+    }
+
+  /**
+   * all the grammer &#039;this&#039; object contains,this the base api
+   * {
+   *  node:,
+   *  reg:,
+   *  scope,
+   *  eom
+   *  }
+   **/
+
+  var repeatNode,repeatContainer;
+  var afterIn = /.*in\s/;
+  var beforeIn = /\sin.*/;
+
+  function repeat(str,scope,element) {
+    //to-do
+    var ns = /.*\./;
+    var pro = str.replace(afterIn, &#039;&#039;).replace(ns, &#039;&#039;);
+    var data = scope[pro];
+    var key = str.replace(beforeIn, &#039;&#039;);
+    var parentNode = element.parentNode;
+    var node = parentNode.removeChild(element);
+    var frg = document.createDocumentFragment();
+    var _r = this.reg;
+    var eom = this.eom[pro] = [];
+
+    node.removeAttribute(&#039;repeat&#039;);
+    repeatNode = node;
+    repeatContainer = parentNode;
+
+    eom.repeatNode = node; 
+    eom.repeatContainer = parentNode;
+    eom.trans = trans;
+    eom.key = key;
+    eom.reg = _r;
+    scope.__children__ = scope.__children__ || [];
+
+    if (data &amp;&amp; data.length) {
+      data.forEach(function(d,i) {
+        var _n = node.cloneNode(true);
+        var m = {};
+        var F = function(f){
+          //this._$value = f;
+          this[key] = f;
+        }
+        F.prototype = scope;
+
+        var mod = new F(d);//new model(d);
+        mod.__eom__ = {};
+        mod.__eom__[key] =  m;
+        mod.__last__ = {};
+        mod.__last__[key] = scope.__last__ &amp;&amp; scope.__last__[pro][i] || $tool.clone(d);
+        mod.__listeners__ = {};
+        scope.__children__.push(mod);
+        trans(_r, _n, mod, key, m);
+        m.repeat = _n;
+        eom.push(m);
+        frg.appendChild(_n);
+      });
+      parentNode.appendChild(frg);
+    }
+  }
+
+  var context = {};
+
+
+  function trans(reg, doc, scope, key, eom) {
+    var hasRepeat = false;
+    if (doc.attributes &amp;&amp; doc.attributes.length) {
+      Array.prototype.forEach.call(doc.attributes, function(attr) {
+
+        if (reg.test(attr.nodeValue)) {
+          var k = attr.nodeValue.replace(reg, &#039;&#039;).replace(key + &#039;.&#039;, &#039;&#039;);
+          if (!eom[k]) {
+            eom[k] = [];
+          }
+          eom[k].push({
+            element: attr,
+            expression: attr.nodeValue
+          });
+          var value  = typeof scope[key] == &#039;object&#039; ? scope[key][k] : scope[key];
+          attr.nodeValue = attr.nodeValue.replace(/{{.*}}/, value);
+        }
+
+        context.node = doc;
+        context.scope = scope;//scope; waiting for refactory
+        context.reg = reg;
+        context.eom = eom;
+        if (&#039;repeat&#039; === attr.nodeName) {
+          hasRepeat = true;
+          var ch = attr.nodeValue.replace(afterIn,&#039;&#039;).replace(/\..*/,&#039;&#039;);
+          context.scope = scope[ch]; 
+          repeat.call(context, attr.nodeValue.replace(reg, &#039;&#039;),scope[ch],doc);
+        }else{
+          var grammer = loadGrammar(attr.nodeName);
+          if($tool.isFunction(grammer)){
+            var str = attr.nodeValue.replace(reg, &#039;&#039;);
+            context.eom = {};
+            grammer.call(context,str,scope,context.node);
+          }
+        }
+      });
+    }
+    if (reg.test(doc.nodeValue)) {
+      var k = doc.nodeValue.replace(reg, &#039;&#039;).replace(key + &#039;.&#039;, &#039;&#039;);
+      $tool.buildobj(k,&#039;.&#039;,eom,function(obj,key){
+        obj[key] = obj[key] || [];
+        obj[key].push({
+          element: doc,
+          expression: doc.nodeValue
+        });
+      });
+      /*
+      if (!eom[k]) {
+        eom[k] = [];
+      }
+      eom[k].push({
+        element: doc,
+        expression: doc.nodeValue
+      });
+      */
+      //this change is for identify two case: 
+      //  1. scope = {}
+      //  2. scope = &quot;string&quot; or number
+      var value  = typeof scope[key] == &#039;object&#039; ? scope[key][k] : scope[key];
+      if(typeof scope[key] === &#039;object&#039;){
+        $tool.buildobj(k,&#039;.&#039;,scope[key],function(obj,key){
+          value = obj[key];
+        });
+      }
+      doc.nodeValue = doc.nodeValue.replace(/{{.*}}/, value);
+    }
+    if (doc.childNodes &amp;&amp; doc.childNodes.length &amp;&amp; !hasRepeat) {
+      Array.prototype.forEach.call(doc.childNodes, function(child) {
+        trans(reg, child, scope, key, eom);
+      });
+    }
+  }
+
+  return repeat;
+});</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

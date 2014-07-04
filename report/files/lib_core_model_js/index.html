@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib/core/model.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib/core/model.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">64.13</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">181</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">59.28</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">2.03</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">define(&#039;river.core.model&#039;, function(exports,require,module) { //@sourceURL=../lib/core/model.js
+
+  var tools = this.need(&#039;river.core.tools&#039;);
+
+  var me = this;
+
+  var isArray  = tools.isArray;
+  var isObject = tools.isObject;
+  var isString = tools.isString;
+  var isNumber = tools.isNumber;
+  var each     = tools.each;
+  var loop     = tools.loop;
+
+  function update(value, key, eom ,last) {
+    var scope = this;
+    var oldvalue = last[key];
+    var isEqual = value == oldvalue;
+    if(isEqual) return;
+    if (isString(value) || isNumber(value)) {
+      if(eom &amp;&amp; eom[key]){
+        loop(eom[key], function(ele, i) {
+          ele.element.nodeValue = ele.expression.replace(/{{.*}}/, value);
+          if(ele.element.nodeName == &#039;INPUT&#039; &amp;&amp; ele.element.value !== value){
+            ele.element.value = ele.expression.replace(/{{.*}}/, value);
+          }
+          //ele.element.parent.innerHTML = ele.expression.replace(/{{.*}}/, value);
+        });
+        pub(scope,key,value,last);
+      }
+      last[key] = value;
+    } else if (isArray(value)) {
+      last[key] = oldvalue ? oldvalue : [];
+      diff(value,last[key],eom[key],scope,key,last);
+      pub(scope,key,value,last);
+    } else if (isObject(value)) {
+      oldvalue = oldvalue ? oldvalue : {};
+      each(value, function(item, index) {
+        update.call(scope,item, index, eom[key], oldvalue);
+      });
+    }
+  }
+
+  function pub(scope,key,value,last){
+    var fns = scope.__listeners__ &amp;&amp; scope.__listeners__[key] ;
+    if(fns){
+      for (var i = 0, len = fns.length; i &lt; len; i++) {
+        fns[i](value,last[key]);
+      }
+    }
+  }
+
+  function diff(value,oldvalue,eom,scope,key,last){
+    var len = value.length &gt;= oldvalue.length ? value.length : oldvalue.length;
+    var expect = tools.expect;
+    var container = eom.repeatContainer;
+    var cnt = 0;
+    for (var i = 0 ; i &lt; len; i++) {
+      var newvalue = value[i];
+      var exists = typeof newvalue !== &#039;undefined&#039;;
+      if(exists &amp;&amp; !expect(newvalue).toEqual(oldvalue[i])){
+        var neweom = getNewEom(eom,newvalue,scope,key,i,last);
+        var refnode = container.children[i];
+        //oldvalue.splice(i,1,newvalue); // sync oldvalue
+        if(typeof newvalue == &#039;object&#039;){
+          oldvalue[i] = oldvalue[i] || {};
+          cover(oldvalue[i],newvalue);
+        }else{
+          oldvalue[i] = newvalue;
+        }
+        eom.splice(i,1,neweom); //sync eom
+        container.insertBefore(neweom.repeat,refnode); //sync dom
+        if(refnode)container.removeChild(refnode);
+      }else if(!exists){
+        oldvalue.splice(i-cnt,1);
+        eom.splice(i-cnt,1);
+        container.removeChild(container.children[i-cnt]);
+        cnt++;
+      }
+    }
+  }
+
+  function cover(oldvalue,newvalue){
+    for(var x in newvalue){
+      oldvalue[x] = newvalue[x];
+    }
+  }
+
+  function getIndex(v,srcarray){
+    var result = -1;
+    for (var i = 0, len = srcarray.length; i &lt; len; i++) {
+      if(tools.expect(v).toEqual(srcarray[i])){
+        result = i;
+        break;
+      }
+    }
+    return result;
+  }
+
+  function getNewEom(eom,d,parentscope,ns,index,last){
+    var trans = eom.trans;
+    var node = eom.repeatNode;
+    var _r = eom.reg;
+    var key = eom.key;
+    var _n = node.cloneNode(true);
+    var m = {};
+    var F = function(f){
+      this.__eom__ = {};
+      this.__last__ = {};
+      this.__listeners__ = {};
+      this[key] = f;
+      this.__eom__[key] = m;
+      this.__last__[key] = last[ns] &amp;&amp; last[ns][index] || tools.clone(d);
+    };
+    F.prototype = parentscope;
+    var mod = new F(d);
+    trans(_r, _n, mod, key, m);
+    m.repeat = _n;
+    return m;
+  }
+
+
+  function Model(ref) {
+    if(typeof ref === &#039;object&#039;){
+     for(var x in ref){
+       this[x] = ref[x];
+     } 
+    }else{
+      this._$value = ref;
+    }
+    this.__listeners__ = {};
+  }
+
+  Model.prototype.apply = function() {
+    var father = Object.getPrototypeOf(this);
+    var me = this;
+    apply.call(me);
+    apply.call(father);
+  };
+
+  function apply (){
+    var _eom = this.__eom__
+      , last = this.__last__
+      , scope = this;
+    if(!_eom) return;
+
+    each(this, function(val, index) {
+      if(/__/.test(index)) return;
+      //if (_eom[index] &amp;&amp; !tools.expect(last[index]).toEqual(val)) {
+      if (!tools.expect(last[index]).toEqual(val)) {
+        update.call(scope,val, index, _eom,last);
+        //last[index] = tools.clone(val);
+      }
+    });
+    var fns = scope.__listeners__ &amp;&amp; scope.__listeners__._$scope ;
+    if(fns){
+      for (var i = 0, len = fns.length; i &lt; len; i++) {
+        fns[i](scope,last);
+      }
+    }
+  }
+
+  Model.prototype.watch = function(eom, repeat) {};
+
+  Model.prototype.onchange = function(id,fn) {
+    if(typeof id === &#039;function&#039;){
+        fn = id;
+        id = &#039;_$scope&#039;;
+    }
+    var lis = this.__listeners__[id] = this.__listeners__[id] || [];
+    lis.push(fn);
+  };
+
+  Model.prototype.inject = function(source) {
+    var me = this;
+    each(source, function(item, index) {
+      me[index] = source[index];
+    });
+  };
+
+  return Model;
+});</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

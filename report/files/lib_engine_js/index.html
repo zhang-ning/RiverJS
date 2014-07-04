@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib/engine.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib/engine.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">59.24</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">172</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">50.07</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.63</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">define(&#039;river.engine&#039;,function() {
+
+  var me = this,
+    tool = me.need(&#039;river.core.tools&#039;);
+  function loadGrammer(key) {
+    return me.need(&#039;river.grammer.&#039; + key);
+  }
+
+  // this reg is for math {{ **.** }} type expression
+  var reg = /.*{{\s*|\s*}}.*/g;
+
+
+
+  function checkAttributes(doc, fatherContext) {
+    var state = {
+      hasRepeat: false,
+      context: fatherContext
+    };
+    var newContext = {
+      scope: {},
+      node: doc,
+      eom: {},
+      reg: reg
+    };
+
+    if (doc.attributes &amp;&amp; doc.attributes.length) {
+      for(var i = 0;i&lt;doc.attributes.length;i++){
+        var attr= doc.attributes[i];
+        var key = attr.nodeName;
+        var value = attr.nodeValue.replace(reg, &#039;&#039;);
+        var grammer = loadGrammer(key);
+
+        if (&#039;scope&#039; === key) {
+          //here we cover the current context by newContext;
+          state.context = newContext;
+          grammer.call(state.context, value,state.context.scope,state.context.node);
+          if (fatherContext) {
+            //the inherit object should be the same reference,nor a new one.And no need to inherit eom.
+            tool.inherit(state.context.scope, fatherContext.scope);
+          }
+        } else {
+          if (tool.isFunction(grammer)) {
+            if (state.context) {
+              state.context.node = doc;
+              grammer.call(state.context, value,state.context.scope,state.context.node);
+              checkText(attr, state.context);
+            } else {
+              state.context = newContext;
+              loadGrammer(&#039;scope&#039;).call(state.context, value);
+              grammer.call(state.context, value,state.context.scope,state.context.node);
+            }
+          }
+        }
+        if (&#039;repeat&#039; === key) {
+          state.hasRepeat = true;
+          break;
+        }
+      }
+    }
+    return state;
+  }
+
+  function checkText(doc, context) {
+    if (reg.test(doc.nodeValue)) {
+      var key = doc.nodeValue.replace(/\r|\n/g,&#039;&#039;).replace(reg, &#039;&#039;);
+      //&#039;a.b.c.d&#039;
+      var ns = key.split(&#039;.&#039;);
+      var value = {};
+      var eom = {};
+      for(var i=0;i&lt;ns.length;i++){
+        if(typeof value === &#039;object&#039;){
+          value = value[ns[i]] || context.scope[ns[i]] 
+        }
+      }
+      value = typeof value == &#039;object&#039; ? JSON.stringify(value) : value;
+      if(typeof value == &#039;undefined&#039;) value = &#039;&#039;;
+      tool.buildobj(key,&#039;.&#039;,context.eom,function(obj,key){
+        obj[key] = obj[key] || [];
+        obj[key].push({
+          element: doc,
+          expression: doc.nodeValue
+        });
+      });
+      doc.nodeValue = doc.nodeValue.replace(/\r|\n/g,&#039;&#039;).replace(/{{.*}}/, value);
+    }
+  }
+
+  function checkChildren(doc, state) {
+    if (doc.childNodes &amp;&amp; doc.childNodes.length) {
+      for(var i=0;i&lt;doc.childNodes.length;i++){
+        var child = doc.childNodes[i];
+        var context = state ? state.context : undefined;
+        var s = scan(child, context);
+        if(s.hasRepeat) break;
+      }
+    }
+  }
+
+
+
+  function scan(doc, context) {
+    var state = checkAttributes(doc, context);
+    if (state.context) {
+      checkText(doc, state.context);
+    }
+    if (&#039;CODE&#039; !== doc.nodeName &amp;&amp; &#039;PRE&#039; !== doc.nodeName &amp;&amp; !state.hasRepeat) {
+      if (state.context) {
+        checkChildren(doc, state);
+      } else {
+        checkChildren(doc);
+      }
+    }
+    return state;
+  }
+
+
+  /*!
+   * contentloaded.js
+   *
+   * Author: Diego Perini (diego.perini at gmail.com)
+   * Summary: cross-browser wrapper for DOMContentLoaded
+   * Updated: 20101020
+   * License: MIT
+   * Version: 1.2
+   *
+   * URL:
+   * http://javascript.nwbox.com/ContentLoaded/
+   * http://javascript.nwbox.com/ContentLoaded/MIT-LICENSE
+   *
+   */
+
+  // @win window reference
+  // @fn function reference
+  function contentLoaded(win, fn) {
+
+    var done = false, top = true,
+
+    doc = win.document, root = doc.documentElement,
+
+    add = doc.addEventListener ? &#039;addEventListener&#039; : &#039;attachEvent&#039;,
+    rem = doc.addEventListener ? &#039;removeEventListener&#039; : &#039;detachEvent&#039;,
+    pre = doc.addEventListener ? &#039;&#039; : &#039;on&#039;,
+
+    init = function(e) {
+      if (e.type == &#039;readystatechange&#039; &amp;&amp; doc.readyState != &#039;complete&#039;) return;
+      (e.type == &#039;load&#039; ? win : doc)[rem](pre + e.type, init, false);
+      if (!done &amp;&amp; (done = true)) fn.call(win, e.type || e);
+    },
+
+    poll = function() {
+      try { root.doScroll(&#039;left&#039;); } catch(e) { setTimeout(poll, 50); return; }
+      init(&#039;poll&#039;);
+    };
+
+    if (doc.readyState == &#039;complete&#039;) fn.call(win, &#039;lazy&#039;);
+    else {
+      if (doc.createEventObject &amp;&amp; root.doScroll) {
+        try { top = !win.frameElement; } catch(e) { }
+        if (top) poll();
+      }
+      doc[add](pre + &#039;DOMContentLoaded&#039;, init, false);
+      doc[add](pre + &#039;readystatechange&#039;, init, false);
+      win[add](pre + &#039;load&#039;, init, false);
+    }
+  }
+
+  return {
+    scan:scan,
+    ready:contentLoaded
+  };
+
+});</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>
