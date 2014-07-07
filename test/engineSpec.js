@@ -59,4 +59,7 @@ describe('The template enginee render feature ',function(){
     $scan(element);
     expect("12345").toBe(element.textContent);
   });
+
+  it('expected data-binding api via template engine ,style',function(){
+  });
 });
