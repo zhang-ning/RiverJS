@@ -7,6 +7,8 @@ module.exports = function(config) {
     // base path, that will be used to resolve files and exclude
     basePath: '',
 
+   usePolling: true,
+
 
     // frameworks to use
     frameworks: ['jasmine'],
