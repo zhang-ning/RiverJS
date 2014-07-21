@@ -217,6 +217,7 @@ define('river.engine',function() {
 
   return {
     scan:scan,
+    compile:scan,
     ready:contentLoaded
   };
 
