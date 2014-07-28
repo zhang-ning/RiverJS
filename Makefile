@@ -1,8 +1,8 @@
 src = \
-			lib/*.js \
-			lib/core/*.js\
-			lib/grammer/*.js\
-			lib/main/*.js
+      lib/*.js \
+      lib/core/*.js\
+      lib/grammer/*.js\
+      lib/main/*.js
 rp = $(realpath $(src))
 
 dist = dist/river.js
@@ -12,7 +12,7 @@ sourcemap = $(dist:.js=.map)
 minify = node_modules/uglify-js/bin/uglifyjs
 #appfolder = ../riverjs-website
 jsdoc = node_modules/.bin/jsdoc
-karma = node_modules/.bin/karma
+karma = node_modules/karma/bin/karma
 doc = doc
 doctemplate = node_modules/jsdoc/templates/haruki
 
