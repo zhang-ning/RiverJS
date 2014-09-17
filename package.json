@@ -24,7 +24,7 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-notify": "~0.2.17",
     "jsdoc": "~3.3.0",
-    "karma": "^0.12.16",
+    "karma": "^0.12.19",
     "karma-chrome-launcher": "~0.1.1",
     "karma-coffee-preprocessor": "~0.1.1",
     "karma-firefox-launcher": "~0.1.2",
